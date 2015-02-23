@@ -1,21 +1,19 @@
 NAME=zentwm
 
-CC=g++
-CFLAGS=-Ilibswc --std=c++11
-LDFLAGS=-lm
+CFLAGS	+=-Wall -Ilibswc --std=c++11
+LDFLAGS	+=-lm
 
-SRCF=wm.cpp
+CFLAGS	+= $(shell pkg-config --cflags swc)
+LDFLAGS	+= $(shell pkg-config --libs swc)
 
-CFLAGS	+= `pkg-config --cflags swc`
-LDFLAGS	+= `pkg-config --libs swc`
+SRCN=wm
+SRCF=$(patsubst %,src/%,$(SRCN))
+SRC=$(patsubst %,%.cpp,$(SRCF))
+OBJ=$(patsubst %,%.o,$(SRCF))
 
-SRC=$(patsubst %,src/%,$(SRCF))
-OBJ = obj/$(NAME).o
+.PHONY: all
+all: $(NAME)
 
-all:
-	mkdir -p obj
-	$(CC) $(CFLAGS) $(SRC) -c -o obj/$(NAME).o
-	$(CC) $(LDFLAGS) $(OBJ) -o $(NAME)
-
-clean:
-	rm -rf obj
+.PHONY: $(NAME)
+$(NAME): $(OBJ)
+	$(CXX) $(LDFLAGS) $(CFLAGS) $(OBJ) -o $(NAME)

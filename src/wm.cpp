@@ -31,19 +31,8 @@ extern "C" {
 
 }
 
-struct screen
-{
-    struct swc_screen * swc;
-    struct wl_list windows;
-    unsigned num_windows;
-};
-
-struct window
-{
-    struct swc_window * swc;
-    struct screen * screen;
-    struct wl_list link;
-};
+#include "screen.h"
+#include "window.h"
 
 static const char * terminal_command[] = { "st-wl", NULL };
 static const char * dmenu_command[] = { "dmenu_run-wl", NULL };
@@ -51,16 +40,16 @@ static const uint32_t border_width = 1;
 static const uint32_t border_color_active = 0xff333388;
 static const uint32_t border_color_normal = 0xff888888;
 
-static struct screen * active_screen;
-static struct window * focused_window;
+static Screen * active_screen;
+static Window * focused_window;
 static struct wl_display * display;
 static struct wl_event_loop * event_loop;
 
 /* This is a basic grid arrange function that tries to give each window an
  * equal space. */
-static void arrange(struct screen * screen)
+static void arrange(Screen * screen)
 {
-    struct window * window = NULL;
+    Window * window = NULL;
     unsigned num_columns, num_rows, column_index, row_index;
     struct swc_rectangle geometry;
     struct swc_rectangle * screen_geometry = &screen->swc->usable_geometry;
@@ -94,25 +83,25 @@ static void arrange(struct screen * screen)
     }
 }
 
-static void screen_add_window(struct screen * screen, struct window * window)
+static void screen_add_window(Screen * screen, Window * window)
 {
     window->screen = screen;
     wl_list_insert(&screen->windows, &window->link);
-    ++screen->num_windows;
+    screen->num_windows++;
     swc_window_show(window->swc);
     arrange(screen);
 }
 
-static void screen_remove_window(struct screen * screen, struct window * window)
+static void screen_remove_window(Screen * screen, Window * window)
 {
     window->screen = NULL;
     wl_list_remove(&window->link);
-    --screen->num_windows;
+    screen->num_windows--;
     swc_window_hide(window->swc);
     arrange(screen);
 }
 
-static void focus(struct window * window)
+static void focus(Window * window)
 {
     if (focused_window)
     {
@@ -133,7 +122,7 @@ static void focus(struct window * window)
 
 static void screen_usable_geometry_changed(void * data)
 {
-    struct screen * screen = (struct screen*)data;
+    Screen * screen = (Screen*)data;
 
     /* If the usable geometry of the screen changes, for example when a panel is
      * docked to the edge of the screen, we need to rearrange the windows to
@@ -143,7 +132,7 @@ static void screen_usable_geometry_changed(void * data)
 
 static void screen_entered(void * data)
 {
-    struct screen * screen = (struct screen*)data;
+    Screen * screen = (Screen*)data;
 
     active_screen = screen;
 }
@@ -157,7 +146,7 @@ static const swc_screen_handler screen_handler {
 
 static void window_destroy(void * data)
 {
-    struct window * window = (struct window *)data, * next_focus;
+    Window * window = (Window *)data, * next_focus;
 
     if (focused_window == window)
     {
@@ -182,7 +171,7 @@ static void window_destroy(void * data)
 
 static void window_entered(void * data)
 {
-    struct window * window = (struct window *)data;
+    Window * window = (Window *)data;
 
     focus(window);
 }
@@ -200,33 +189,16 @@ static const struct swc_window_handler window_handler = {
 
 static void new_screen(struct swc_screen * swc)
 {
-    struct screen * screen;
-
-    screen =(struct screen*)malloc(sizeof *screen);
-
-    if (!screen)
-        return;
-
-    screen->swc = swc;
-    screen->num_windows = 0;
-    wl_list_init(&screen->windows);
-    swc_screen_set_handler(swc, &screen_handler, screen);
+    Screen * screen = new Screen(swc, &screen_handler);
     active_screen = screen;
 }
 
 static void new_window(struct swc_window * swc)
 {
-    struct window * window;
+    Window * window;
 
-    window = (struct window*)malloc(sizeof *window);
+    window = new Window(swc, &window_handler);
 
-    if (!window)
-        return;
-
-    window->swc = swc;
-    window->screen = NULL;
-    swc_window_set_handler(swc, &window_handler, window);
-    swc_window_set_tiled(swc);
     screen_add_window(active_screen, window);
     focus(window);
 }
@@ -256,7 +228,8 @@ static void quit(void * data, uint32_t time, uint32_t value, uint32_t state)
 }
 
 void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state){
-    if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
+    if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+        focused_window != NULL)
         swc_window_close(focused_window->swc);
 }
 
@@ -273,7 +246,7 @@ int main(int argc, char * argv[])
 
     // Add hotkeys
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
-                    &close_focused_window, nullptr);
+                    &close_focused_window, NULL);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Return,
                     &spawn, terminal_command);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_r,
