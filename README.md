@@ -11,3 +11,7 @@ In it's current state, it is not possible to compile swc with C++, because there
 there is a patch in this folder named class_to_appid.patch which you will have to apply to swc to make it work
 To automate the process, i have added the swcinstall.sh script in the misc folder which downloads, checks out the compatible swc commit and patches it.
 After that is run, simply cd into swc_patched and make install
+
+#### Usage
+
+Simply run "swc-launch $PATH_TO_ZENTWM"

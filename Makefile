@@ -14,9 +14,8 @@ OBJ = obj/$(NAME).o
 
 all:
 	mkdir -p obj
-	echo $(LDFLAGS)
 	$(CC) $(CFLAGS) $(SRC) -c -o obj/$(NAME).o
 	$(CC) $(LDFLAGS) $(OBJ) -o $(NAME)
 
 clean:
-	rm -rf obj bin
+	rm -rf obj

@@ -255,24 +255,32 @@ static void quit(void * data, uint32_t time, uint32_t value, uint32_t state)
     wl_display_terminate(display);
 }
 
+void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state){
+    if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
+        swc_window_close(focused_window->swc);
+}
+
 int main(int argc, char * argv[])
 {
     display = wl_display_create();
 
     if (!display)
         return EXIT_FAILURE;
-
     if (wl_display_add_socket(display, NULL) != 0)
         return EXIT_FAILURE;
-
     if (!swc_initialize(display, NULL, &manager))
         return EXIT_FAILURE;
 
+    // Add hotkeys
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
+                    &close_focused_window, nullptr);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Return,
                     &spawn, terminal_command);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_r,
                     &spawn, dmenu_command);
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
+    //swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
+    //                &quit, NULL);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Escape,
                     &quit, NULL);
 
     event_loop = wl_display_get_event_loop(display);
