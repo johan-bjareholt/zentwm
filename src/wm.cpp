@@ -1,46 +1,27 @@
-/* swc: example/wm.c
- *
- * Copyright (c) 2014 Michael Forney
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 extern "C" {
 
-#include <stdlib.h>
-#include <swc.h>
-#include <unistd.h>
-#include <wayland-server.h>
-#include <xkbcommon/xkbcommon.h>
+    #include <stdlib.h>
+    #include <swc.h>
+    #include <unistd.h>
+    #include <wayland-server.h>
+    #include <xkbcommon/xkbcommon.h>
 
 }
 
-
+#include "wm.h"
 #include "config.h"
 #include "screen.h"
 #include "window.h"
 #include "layout.h"
 
-static const char * terminal_command[] = { "st-wl", NULL };
-static const char * dmenu_command[] = { "dmenu_run-wl", NULL };
 
-static void screen_remove_window(Screen * screen, Window * window)
+Screen * active_screen;
+Window * focused_window;
+struct wl_display * display;
+struct wl_event_loop * event_loop;
+
+
+void screen_remove_window(Screen * screen, Window * window)
 {
     window->screen = NULL;
     wl_list_remove(&window->link);
@@ -49,7 +30,7 @@ static void screen_remove_window(Screen * screen, Window * window)
     arrange(screen);
 }
 
-static void focus(Window * window)
+void focus(Window * window)
 {
     if (focused_window)
     {
@@ -68,7 +49,7 @@ static void focus(Window * window)
     focused_window = window;
 }
 
-static void screen_usable_geometry_changed(void * data)
+void screen_usable_geometry_changed(void * data)
 {
     Screen * screen = (Screen*)data;
 
@@ -78,21 +59,21 @@ static void screen_usable_geometry_changed(void * data)
     arrange(screen);
 }
 
-static void screen_entered(void * data)
+void screen_entered(void * data)
 {
     Screen * screen = (Screen*)data;
 
     active_screen = screen;
 }
 
-static const swc_screen_handler screen_handler {
+const swc_screen_handler screen_handler {
     .destroy = NULL,
     .geometry_changed = NULL,
     .usable_geometry_changed = &screen_usable_geometry_changed,
     .entered = &screen_entered,
 };
 
-static void window_destroy(void * data)
+void window_destroy(void * data)
 {
     Window * window = (Window *)data, * next_focus;
 
@@ -117,14 +98,14 @@ static void window_destroy(void * data)
     free(window);
 }
 
-static void window_entered(void * data)
+void window_entered(void * data)
 {
     Window * window = (Window *)data;
 
     focus(window);
 }
 
-static const struct swc_window_handler window_handler = {
+const struct swc_window_handler window_handler = {
     .destroy = &window_destroy,
     .title_changed = NULL,
     .appid_changed = NULL,
@@ -135,13 +116,13 @@ static const struct swc_window_handler window_handler = {
 };
 
 
-static void new_screen(struct swc_screen * swc)
+void new_screen(struct swc_screen * swc)
 {
     Screen * screen = new Screen(swc, &screen_handler);
     active_screen = screen;
 }
 
-static void new_window(struct swc_window * swc)
+void new_window(struct swc_window * swc)
 {
     Window * window;
 
@@ -153,7 +134,7 @@ static void new_window(struct swc_window * swc)
 
 const struct swc_manager manager = { &new_screen, &new_window };
 
-static void spawn(void * data, uint32_t time, uint32_t value, uint32_t state)
+void spawn(void * data, uint32_t time, uint32_t value, uint32_t state)
 {
     char * const * command = (char * const *)data;
 
@@ -167,7 +148,7 @@ static void spawn(void * data, uint32_t time, uint32_t value, uint32_t state)
     }
 }
 
-static void quit(void * data, uint32_t time, uint32_t value, uint32_t state)
+void quit(void * data, uint32_t time, uint32_t value, uint32_t state)
 {
     if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
         return;
@@ -175,6 +156,7 @@ static void quit(void * data, uint32_t time, uint32_t value, uint32_t state)
     wl_display_terminate(display);
 }
 
+// Should i keep this function?
 void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state){
     if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
         focused_window != NULL)
@@ -193,16 +175,7 @@ int main(int argc, char * argv[])
         return EXIT_FAILURE;
 
     // Add hotkeys
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
-                    &close_focused_window, NULL);
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Return,
-                    &spawn, terminal_command);
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_r,
-                    &spawn, dmenu_command);
-    //swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
-    //                &quit, NULL);
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Escape,
-                    &quit, NULL);
+    setup_hotkeys();
 
     event_loop = wl_display_get_event_loop(display);
     wl_display_run(display);
