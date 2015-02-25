@@ -9,7 +9,6 @@ extern Window * focused_window;
 extern struct wl_display * display;
 extern struct wl_event_loop * event_loop;
 
-void screen_remove_window(Screen * screen, Window * window);
 void focus(Window * window);
 void screen_usable_geometry_changed(void * data);
 void screen_entered(void * data);

@@ -10,12 +10,15 @@ class Screen;
 #include "window.h"
 
 class Screen {
+	void (*arrangefunc)(Screen*);
 public:
     struct swc_screen * swc;
     struct wl_list windows;
     unsigned num_windows;
     Screen(swc_screen* swc, const swc_screen_handler* screen_handler);
    	void add_window(Window* window);
+   	void remove_window(Window* window);
+   	void arrange();
 };
 
 

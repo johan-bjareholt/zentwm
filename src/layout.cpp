@@ -3,7 +3,7 @@
 
 /* This is a basic grid arrange function that tries to give each window an
  * equal space. */
-void arrange(Screen * screen)
+void evenlayout(Screen * screen)
 {
     Window * window = NULL;
     unsigned num_columns, num_rows, column_index, row_index;

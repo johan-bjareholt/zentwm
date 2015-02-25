@@ -4,6 +4,6 @@
 #include "screen.h"
 #include "config.h"
 
-void arrange(Screen * screen);
+void evenlayout(Screen * screen);
 
 #endif

@@ -12,7 +12,6 @@ extern "C" {
 #include "config.h"
 #include "screen.h"
 #include "window.h"
-#include "layout.h"
 
 
 Screen * active_screen;
@@ -20,15 +19,6 @@ Window * focused_window;
 struct wl_display * display;
 struct wl_event_loop * event_loop;
 
-
-void screen_remove_window(Screen * screen, Window * window)
-{
-    window->screen = NULL;
-    wl_list_remove(&window->link);
-    screen->num_windows--;
-    swc_window_hide(window->swc);
-    arrange(screen);
-}
 
 void focus(Window * window)
 {
@@ -56,7 +46,7 @@ void screen_usable_geometry_changed(void * data)
     /* If the usable geometry of the screen changes, for example when a panel is
      * docked to the edge of the screen, we need to rearrange the windows to
      * ensure they are all within the new usable geometry. */
-    arrange(screen);
+    screen->arrange();
 }
 
 void screen_entered(void * data)
@@ -94,7 +84,7 @@ void window_destroy(void * data)
         focus(next_focus);
     }
 
-    screen_remove_window(window->screen, window);
+    window->screen->remove_window(window);
     free(window);
 }
 
