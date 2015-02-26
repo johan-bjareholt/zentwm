@@ -164,6 +164,8 @@ int main(int argc, char * argv[])
     if (!swc_initialize(display, NULL, &manager))
         return EXIT_FAILURE;
 
+    // Reserve space for panel
+    set_panelreserve(20);
     // Add hotkeys
     setup_hotkeys();
 

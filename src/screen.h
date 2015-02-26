@@ -9,6 +9,8 @@ class Screen;
 
 #include "window.h"
 
+void set_panelreserve(int);
+
 class Screen {
 	void (*arrangefunc)(Screen*);
 public:

@@ -1,5 +1,21 @@
+#include "wm.h"
 #include "screen.h"
 #include "layout.h"
+
+void set_panelreserve(int px){
+	struct swc_rectangle * screen_geometry = &active_screen->swc->usable_geometry;
+	screen_geometry->y -= panelreservation;
+	screen_geometry->height += panelreservation;
+	panelreservation = px;
+	screen_geometry->y += panelreservation;
+	screen_geometry->height -= panelreservation;
+}
+
+/*
+
+	Screen class functions
+
+*/
 
 Screen::Screen(swc_screen* swc, const swc_screen_handler* screen_handler)
 {

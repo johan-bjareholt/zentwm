@@ -1,5 +1,6 @@
 
 #include "layout.h"
+#include "config.h"
 
 /* This is a basic grid arrange function that tries to give each window an
  * equal space. */
@@ -11,6 +12,9 @@ void evenlayout(Screen * screen)
     struct swc_rectangle * screen_geometry = &screen->swc->usable_geometry;
 
     if (screen->num_windows == 0) return;
+
+    //screen_geometry.height -= 200;
+    //geometry.y += panelreservation;
 
     num_columns = ceil(sqrt(screen->num_windows));
     num_rows = screen->num_windows / num_columns + 1;

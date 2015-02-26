@@ -17,9 +17,10 @@ extern "C" {
 
 
 
-extern const uint32_t border_width;
-extern const uint32_t border_color_active;
-extern const uint32_t border_color_normal;
+extern uint32_t border_width;
+extern uint32_t border_color_active;
+extern uint32_t border_color_normal;
+extern int panelreservation;
 
 void setup_hotkeys();
 
