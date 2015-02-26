@@ -11,6 +11,11 @@ void set_panelreserve(int px){
 	screen_geometry->height -= panelreservation;
 }
 
+void set_padding(int px){
+	padding = px;
+	active_screen->arrange();
+}
+
 /*
 
 	Screen class functions

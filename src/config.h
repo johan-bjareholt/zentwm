@@ -21,6 +21,7 @@ extern uint32_t border_width;
 extern uint32_t border_color_active;
 extern uint32_t border_color_normal;
 extern int panelreservation;
+extern int padding;
 
 void setup_hotkeys();
 

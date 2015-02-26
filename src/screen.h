@@ -10,6 +10,7 @@ class Screen;
 #include "window.h"
 
 void set_panelreserve(int);
+void set_padding(int);
 
 class Screen {
 	void (*arrangefunc)(Screen*);

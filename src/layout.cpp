@@ -22,20 +22,20 @@ void evenlayout(Screen * screen)
 
     for (column_index = 0; &window->link != &screen->windows; ++column_index)
     {
-        geometry.x = screen_geometry->x + border_width
+        geometry.x = screen_geometry->x + border_width + padding
             + screen_geometry->width * column_index / num_columns;
         geometry.width = screen_geometry->width / num_columns
-            - 2 * border_width;
+            - 2 * border_width - 2*padding;
 
         if (column_index == screen->num_windows % num_columns)
             --num_rows;
 
         for (row_index = 0; row_index < num_rows; ++row_index)
         {
-            geometry.y = screen_geometry->y + border_width
+            geometry.y = screen_geometry->y + border_width + padding
                 + screen_geometry->height * row_index / num_rows;
             geometry.height = screen_geometry->height / num_rows
-                - 2 * border_width;
+                - 2 * border_width - 2*padding;
 
             swc_window_set_geometry(window->swc, &geometry);
             window = wl_container_of(window->link.next, window, link);

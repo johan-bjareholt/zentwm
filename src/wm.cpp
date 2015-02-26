@@ -1,17 +1,10 @@
 extern "C" {
-
-    #include <stdlib.h>
     #include <swc.h>
-    #include <unistd.h>
     #include <wayland-server.h>
-    #include <xkbcommon/xkbcommon.h>
-
 }
 
 #include "wm.h"
 #include "config.h"
-#include "screen.h"
-#include "window.h"
 
 
 Screen * active_screen;
@@ -124,20 +117,6 @@ void new_window(struct swc_window * swc)
 
 const struct swc_manager manager = { &new_screen, &new_window };
 
-void spawn(void * data, uint32_t time, uint32_t value, uint32_t state)
-{
-    char * const * command = (char * const *)data;
-
-    if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
-        return;
-
-    if (fork() == 0)
-    {
-        execvp(command[0], command);
-        exit(EXIT_FAILURE);
-    }
-}
-
 void quit(void * data, uint32_t time, uint32_t value, uint32_t state)
 {
     if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
@@ -155,8 +134,10 @@ void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t s
 
 int main(int argc, char * argv[])
 {
+    /*
+        Initialize graphics and display
+    */
     display = wl_display_create();
-
     if (!display)
         return EXIT_FAILURE;
     if (wl_display_add_socket(display, NULL) != 0)
@@ -164,13 +145,21 @@ int main(int argc, char * argv[])
     if (!swc_initialize(display, NULL, &manager))
         return EXIT_FAILURE;
 
+    /*
+        Setup configuration
+    */
     // Reserve space for panel
     set_panelreserve(20);
+    // Adds padding to layout
+    set_padding(5);
     // Add hotkeys
     setup_hotkeys();
 
+    // Get events
     event_loop = wl_display_get_event_loop(display);
+    // Start session
     wl_display_run(display);
+    // Destroy session after termination signal
     wl_display_destroy(display);
 
     return EXIT_SUCCESS;

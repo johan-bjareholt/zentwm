@@ -1,10 +1,12 @@
 #include "config.h"
+#include "util.h"
 
 uint32_t border_width = 1;
 uint32_t border_color_active = 0xff333388;
 uint32_t border_color_normal = 0xff888888;
 
 int panelreservation = 0;
+int padding=0;
 
 static const char * terminal_command[] = { "st-wl", NULL };
 static const char * dmenu_command[] = { "dmenu_run-wl", NULL };
