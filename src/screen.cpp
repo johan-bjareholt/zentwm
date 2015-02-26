@@ -26,7 +26,7 @@ Screen::Screen(swc_screen* swc, const swc_screen_handler* screen_handler)
 {
 	this->swc = swc;
 	this->num_windows = 0;
-	this->arrangefunc = &evenlayout;
+	this->arrangefunc = &masterslavelayout;
 	wl_list_init(&windows);
 	swc_screen_set_handler(swc, screen_handler, this);
 }

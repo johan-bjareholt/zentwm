@@ -5,5 +5,6 @@
 #include "config.h"
 
 void evenlayout(Screen * screen);
+void masterslavelayout(Screen * screen);
 
 #endif

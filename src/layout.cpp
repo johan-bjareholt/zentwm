@@ -2,8 +2,12 @@
 #include "layout.h"
 #include "config.h"
 
-/* This is a basic grid arrange function that tries to give each window an
- * equal space. */
+
+/* 
+    This is a basic grid arrange function that tries to give each window an
+    equal space. 
+*/
+
 void evenlayout(Screen * screen)
 {
     Window * window = NULL;
@@ -12,9 +16,6 @@ void evenlayout(Screen * screen)
     struct swc_rectangle * screen_geometry = &screen->swc->usable_geometry;
 
     if (screen->num_windows == 0) return;
-
-    //screen_geometry.height -= 200;
-    //geometry.y += panelreservation;
 
     num_columns = ceil(sqrt(screen->num_windows));
     num_rows = screen->num_windows / num_columns + 1;
@@ -31,6 +32,52 @@ void evenlayout(Screen * screen)
             --num_rows;
 
         for (row_index = 0; row_index < num_rows; ++row_index)
+        {
+            geometry.y = screen_geometry->y + border_width + padding
+                + screen_geometry->height * row_index / num_rows;
+            geometry.height = screen_geometry->height / num_rows
+                - 2 * border_width - 2*padding;
+
+            swc_window_set_geometry(window->swc, &geometry);
+            window = wl_container_of(window->link.next, window, link);
+        }
+    }
+}
+
+
+
+void masterslavelayout(Screen * screen)
+{
+    Window * window = NULL;
+    int num_rows, row_index;
+    struct swc_rectangle geometry;
+    struct swc_rectangle * screen_geometry = &screen->swc->usable_geometry;
+
+    if (screen->num_windows == 0) return;
+
+    window = wl_container_of(screen->windows.next, window, link);
+
+    if (screen->num_windows == 1){
+        geometry.x = screen_geometry->x + border_width + padding;
+        geometry.y = screen_geometry->y + border_width + padding;
+        geometry.width = screen_geometry->width - 2*border_width - 2*padding;
+        geometry.height = screen_geometry->height - 2*border_width - 2*padding;
+        swc_window_set_geometry(window->swc, &geometry);
+    }
+    
+    else {
+        geometry.x = screen_geometry->x + border_width + padding;
+        geometry.width = screen_geometry->width/2 - 2*padding - 2*border_width;
+        geometry.y = screen_geometry->y + border_width + padding;
+        geometry.height = screen_geometry->height - 2*padding - 2*border_width;
+
+        swc_window_set_geometry(window->swc, &geometry);
+        window = wl_container_of(window->link.next, window, link);
+
+        geometry.x = screen_geometry->x + screen_geometry->width/2 + padding + border_width;
+
+        num_rows = screen->num_windows - 1;
+        for (row_index = 0; &window->link != &screen->windows; ++row_index)
         {
             geometry.y = screen_geometry->y + border_width + padding
                 + screen_geometry->height * row_index / num_rows;
