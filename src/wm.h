@@ -4,22 +4,26 @@
 #include "screen.h"
 #include "window.h"
 
+// Global variables
 extern Screen * active_screen;
 extern Window * focused_window;
 extern struct wl_display * display;
 extern struct wl_event_loop * event_loop;
 
-void focus(Window * window);
-void screen_usable_geometry_changed(void * data);
-void screen_entered(void * data);
-void window_destroy(void * data);
-void window_entered(void * data);
-
+// Swc_manager hooks
 void new_screen(struct swc_screen * swc);
 void new_window(struct swc_window * swc);
 
-void quit(void * data, uint32_t time, uint32_t value, uint32_t state);
+// Swc manager
+const struct swc_manager manager = { 
+	&new_screen, 
+	&new_window
+};
 
-void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state);
+// Main function
+int main(int, char**);
+
+// Quit command
+void quit(void * data, uint32_t time, uint32_t value, uint32_t state);
 
 #endif

@@ -2,13 +2,7 @@
 #define CONFIG_H
 
 extern "C" {
-
-    #include <stdlib.h>
     #include <swc.h>
-    #include <unistd.h>
-    #include <wayland-server.h>
-    #include <xkbcommon/xkbcommon.h>
-
 }
 
 #include "screen.h"
@@ -24,5 +18,7 @@ extern int panelreservation;
 extern int padding;
 
 void setup_hotkeys();
+
+void setup_layouts();
 
 #endif

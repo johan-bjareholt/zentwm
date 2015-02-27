@@ -1,5 +1,8 @@
+#include <xkbcommon/xkbcommon.h>
+
 #include "config.h"
 #include "util.h"
+#include "layout.h"
 
 uint32_t border_width = 1;
 uint32_t border_color_active = 0xff333388;
@@ -20,5 +23,11 @@ void setup_hotkeys(){
                     &spawn, dmenu_command);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Escape,
                     &quit, NULL);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_space,
+    				&next_layout, NULL);
 }
 
+void setup_layouts() {
+	add_layout(masterslavelayout);
+	add_layout(evenlayout);
+}
