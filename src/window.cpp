@@ -15,6 +15,7 @@ void focus_next(void * data, uint32_t time, uint32_t value, uint32_t state){
 	
 }
 
+
 /*
 
 	Window Handler hooks

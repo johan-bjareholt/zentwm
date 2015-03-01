@@ -6,6 +6,7 @@
 	ToDo
 
 	- screen_usable_geometry_changed isn't applied and tested with screen_handler
+    - hiding windows from other workspaces is very dirty
 
 */
 
@@ -38,16 +39,19 @@ const swc_screen_handler screen_handler {
 
 // Screen class
 class Screen {
-	struct layout* currentlayout;
+    struct layout* currentlayout;
+    int num_workspace;
 public:
     struct swc_screen * swc;
-    struct wl_list windows;
-    unsigned num_windows;
+    Workspace* current_workspace;
+    Workspace** workspaces;
     Screen(swc_screen* swc, const swc_screen_handler* screen_handler);
-   	void add_window(Window* window);
-   	void remove_window(Window* window);
-   	void arrange();
-   	void next_layout();
+    ~Screen();
+    void arrange();
+    void hide(Workspace*);
+    void change_workspace(int workspace_index);
+    void change_workspace(Workspace*);
+    void next_layout();
 };
 
 

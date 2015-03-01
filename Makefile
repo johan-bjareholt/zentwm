@@ -6,7 +6,7 @@ LDFLAGS	+=-lm
 CFLAGS	+= $(shell pkg-config --cflags swc)
 LDFLAGS	+= $(shell pkg-config --libs swc)
 
-SRCN=wm screen window layout config util
+SRCN=wm screen window layout config util workspace
 SRCF=$(patsubst %,src/%,$(SRCN))
 SRC=$(patsubst %,%.cpp,$(SRCF))
 OBJ=$(patsubst %,%.o,$(SRCF))

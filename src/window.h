@@ -7,6 +7,7 @@ extern "C" {
 
 class Window;
 
+#include "workspace.h"
 #include "screen.h"
 
 // Commands
@@ -33,7 +34,7 @@ const struct swc_window_handler window_handler = {
 class Window {
 public:
     struct swc_window * swc;
-    Screen* screen;
+    Workspace* screen;
     struct wl_list link;    
     Window(swc_window* swc, const swc_window_handler* window_handler);
 };

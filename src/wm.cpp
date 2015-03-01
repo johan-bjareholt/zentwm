@@ -25,7 +25,7 @@ void new_window(struct swc_window * swc)
 
     window = new Window(swc, &window_handler);
 
-    active_screen->add_window(window);
+    active_screen->current_workspace->add_window(window);
     focus(window);
 }
 

@@ -1,16 +1,16 @@
 #ifndef LAYOUT_H
 #define LAYOUT_H
 
-#include "screen.h"
+#include "workspace.h"
 #include "config.h"
 
 #include <string>
 
-typedef void(*layoutfunc)(Screen*);
+typedef void(*layoutfunc)(Workspace*);
 
 struct layout {
     std::string name;
-    void (*layoutfunc)(Screen*);
+    void (*layoutfunc)(Workspace*);
     layout* next;
 };
 
@@ -25,9 +25,9 @@ layout* get_layout();
 
 // Evenlayout
 extern struct layout evenlayout;
-void evenlayoutfunc(Screen * screen);
+void evenlayoutfunc(Workspace * screen);
 // Master-slave layout
 extern struct layout masterslavelayout;
-void masterslavelayoutfunc(Screen * screen);
+void masterslavelayoutfunc(Workspace * screen);
 
 #endif

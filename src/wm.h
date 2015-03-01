@@ -5,8 +5,8 @@
 #include "window.h"
 
 // Global variables
-extern Screen * active_screen;
-extern Window * focused_window;
+extern Screen* active_screen;
+extern Window* focused_window;
 extern struct wl_display * display;
 extern struct wl_event_loop * event_loop;
 
