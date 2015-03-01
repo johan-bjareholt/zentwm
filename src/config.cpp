@@ -49,7 +49,13 @@ void setup_hotkeys(){
                     &switch_workspace, &workspaces[9]);
 }
 
-void setup_layouts() {
+void setup_layout() {
+    // Reserve space for panel
+    set_panelreserve(20);
+    // Adds padding to layout
+    set_padding(5);
+
+    // Add available layouts
 	add_layout(masterslavelayout);
 	add_layout(evenlayout);
 }

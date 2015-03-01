@@ -3,7 +3,7 @@ zentwm
 
 A wayland tiling window manager based on the swc library written in C++
 
-This is currently nothing more than a C++ compilable version of the swc example wm, but a fun thing to play around with nontheless!
+It is still in heavy development, so please report bugs if you find any! :)
 
 #### Installation
 
@@ -15,3 +15,12 @@ After that is run, simply cd into swc_patched and make install
 #### Usage
 
 Simply run "swc-launch $PATH_TO_ZENTWM"
+
+
+#### General ToDo
+
+- Decide whether to use camelcase or _
+- Move code from Screen to Workspace
+- Fix dirty hideAll workspace function
+- Change window.link to a C++ alternative, and fix all layout&hideAll functions to use the new one
+- Refocus when changing workspace

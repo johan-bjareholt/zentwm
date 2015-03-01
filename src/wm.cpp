@@ -49,14 +49,10 @@ int main(int argc, char * argv[])
         Setup configuration
     */
 
-    // Reserve space for panel
-    set_panelreserve(20);
-    // Adds padding to layout
-    set_padding(5);
     // Add hotkeys
     setup_hotkeys();
     // setup layout
-    setup_layouts();
+    setup_layout();
 
     // Get events
     event_loop = wl_display_get_event_loop(display);

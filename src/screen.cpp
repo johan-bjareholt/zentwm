@@ -19,18 +19,9 @@ void set_panelreserve(int px){
 
 void set_padding(int px){
 	padding = px;
-	active_screen->arrange();
+	active_screen->current_workspace->arrange();
 }
 
-/*
-
-	Commands
-
-*/
-void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state){
-	if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
-		active_screen->next_layout();
-}
 
 /*
 
@@ -45,11 +36,12 @@ void screen_usable_geometry_changed(void * data)
     /* If the usable geometry of the screen changes, for example when a panel is
      * docked to the edge of the screen, we need to rearrange the windows to
      * ensure they are all within the new usable geometry. */
-    screen->arrange();
+    screen->current_workspace->arrange();
 }
 
 void screen_entered(void * data)
 {
+	// Will this function work with multi-monitor setups?
     Screen * screen = (Screen*)data;
     active_screen = screen;
 }
@@ -64,7 +56,6 @@ void screen_entered(void * data)
 Screen::Screen(swc_screen* swc, const swc_screen_handler* screen_handler)
 {
 	this->swc = swc;
-	this->currentlayout = get_layout();
 	this->num_workspace = 10;
 	this->workspaces = new Workspace*[num_workspace];
 	for (int i=0; i<num_workspace; i++){
@@ -78,55 +69,34 @@ Screen::~Screen(){
 	delete current_workspace;
 }
 
-void Screen::arrange(){
-	this->currentlayout->layoutfunc(this->current_workspace);
-}
-
 /*
 
 	This function is very dirty, should be fixed!
 
 */
-void Screen::hide(Workspace* workspace){
-    // Initialize variables
-    Window * window = NULL;
-    struct swc_rectangle geometry;
-
-    if (workspace->num_windows == 0) return;
-
-    // Iterate over columns
-    geometry.x = 10000;
-    geometry.y = 10000;
-    geometry.width = 0;
-    geometry.height = 0;
-
-    window = wl_container_of(workspace->windows.next, window, link);
-    for (int window_index = 0; &window->link != &workspace->windows; window_index++)
-    {
-        // Apply window position and size
-        swc_window_set_geometry(window->swc, &geometry);
-        // Get next window
-        window = wl_container_of(window->link.next, window, link);
-    }
+void Screen::hideAll(Workspace* workspace){
+	this->current_workspace->hideAll();
 }
 
 void Screen::change_workspace(int workspace_index){
 	if (workspace_index < 1 || workspace_index > num_workspace)
 		return;
-	hide(current_workspace);
+	hideAll(current_workspace);
 	current_workspace = workspaces[workspace_index-1];
-	arrange();
+	current_workspace->arrange();
 }
 
 void Screen::change_workspace(Workspace* workspace){
 	if (workspace->screen != this)
 		return;
-	hide(current_workspace);
+	hideAll(current_workspace);
 	current_workspace = workspace;
-	arrange();
+	current_workspace->arrange();
 }
 
-void Screen::next_layout(){
-	this->currentlayout = this->currentlayout->next;
-	arrange();
+bool Screen::operator==(Screen& other){
+	bool result=false;
+	if (this->swc == other.swc)
+		result = true;
+	return result;
 }

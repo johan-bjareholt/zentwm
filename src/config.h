@@ -19,6 +19,6 @@ extern int padding;
 
 void setup_hotkeys();
 
-void setup_layouts();
+void setup_layout();
 
 #endif

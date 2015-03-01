@@ -11,10 +11,6 @@ void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t s
         swc_window_close(focused_window->swc);
 }
 
-void focus_next(void * data, uint32_t time, uint32_t value, uint32_t state){
-	
-}
-
 
 /*
 
@@ -86,4 +82,11 @@ Window::Window(swc_window* swc, const swc_window_handler* window_handler)
     this->screen = NULL;
     swc_window_set_handler(swc, window_handler, this);
     swc_window_set_tiled(swc);
+}
+
+bool Window::operator==(Window& other){
+    bool result = false;
+    if (this->swc == other.swc)
+        result = true;
+    return result;
 }
