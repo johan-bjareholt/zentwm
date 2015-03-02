@@ -84,6 +84,8 @@ void Screen::change_workspace(int workspace_index){
 	hideAll(current_workspace);
 	current_workspace = workspaces[workspace_index-1];
 	current_workspace->arrange();
+	if (current_workspace->focused_window)
+		current_workspace->focused_window->focus();
 }
 
 void Screen::change_workspace(Workspace* workspace){

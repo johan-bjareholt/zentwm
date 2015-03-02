@@ -14,7 +14,6 @@ class Window;
 void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state);
 
 // Window handler hooks
-void focus(Window * window);
 void window_destroy(void * data);
 void window_entered(void * data);
 
@@ -33,9 +32,11 @@ const struct swc_window_handler window_handler = {
 class Window {
 public:
     struct swc_window * swc;
-    Workspace* screen;
+    Workspace* workspace;
     struct wl_list link;    
-    Window(swc_window* swc, const swc_window_handler* window_handler);
+
+    Window(swc_window* swc, Workspace*, const swc_window_handler* window_handler);
+    void focus();
     bool operator==(Window&);
 };
 

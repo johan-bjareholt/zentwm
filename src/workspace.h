@@ -19,6 +19,7 @@ private:
 public:
 	std::string name;
 	Screen* screen;
+	Window* focused_window;
     struct wl_list windows;
     unsigned num_windows;
 	Workspace(std::string, Screen* screen);

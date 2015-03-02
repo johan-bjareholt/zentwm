@@ -23,4 +23,3 @@ Simply run "swc-launch $PATH_TO_ZENTWM"
 - Move code from Screen to Workspace
 - Fix dirty hideAll workspace function
 - Change window.link to a C++ alternative, and fix all layout&hideAll functions to use the new one
-- Refocus when changing workspace

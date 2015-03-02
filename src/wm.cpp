@@ -8,7 +8,6 @@ extern "C" {
 
 
 Screen * active_screen;
-Window * focused_window;
 struct wl_display * display;
 struct wl_event_loop * event_loop;
 
@@ -23,10 +22,8 @@ void new_window(struct swc_window * swc)
 {
     Window * window;
 
-    window = new Window(swc, &window_handler);
-
-    active_screen->current_workspace->add_window(window);
-    focus(window);
+    window = new Window(swc, active_screen->current_workspace, &window_handler);
+    window->focus();
 }
 
 
