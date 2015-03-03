@@ -26,7 +26,10 @@ void setup_hotkeys(){
                     &quit, NULL);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_space,
     				&next_layout, NULL);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Tab,
+                    &focus_next, NULL);
 
+    // Workspace
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_1,
                     &switch_workspace, &workspaces[0]);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_2,

@@ -12,7 +12,8 @@ void switch_workspace(void * data, uint32_t time, uint32_t value, uint32_t state
 
 
 void focus_next(void * data, uint32_t time, uint32_t value, uint32_t state){
-	// Find current focused window
+    if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
+        active_screen->current_workspace->focus_next();
 }
 
 void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state){
@@ -29,24 +30,27 @@ void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state){
 Workspace::Workspace(std::string name, Screen* screen){
 	this->name = name;
 	this->screen = screen;
-	this->num_windows = 0;
 	this->currentlayout = get_layout();
     this->focused_window = nullptr;
-	wl_list_init(&windows);
 }
 
 void Workspace::add_window(Window* window){
-	wl_list_insert(&windows, &window->link);
-	num_windows++;
-	swc_window_show(window->swc);
+    window->workspace_index = windowsv.size();
+    windowsv.push_back(window);
+    if (active_screen->current_workspace == this){
+	   swc_window_show(window->swc);
+       window->focus();
+    }
 	arrange();
 }
 
 void Workspace::remove_window(Window* window){
     window->workspace = NULL;
-    wl_list_remove(&window->link);
-    num_windows--;
+    windowsv.erase(windowsv.begin()+window->workspace_index);
+    for (int i=window->workspace_index; i<(int)windowsv.size(); i++)
+        windowsv[i]->workspace_index--;
     swc_window_hide(window->swc);
+    this->focus_next();
     arrange();
 }
 
@@ -54,30 +58,43 @@ void Workspace::arrange(){
 	this->currentlayout->layoutfunc(this);
 }
 
+Window* Workspace::focus_next(){
+    Window* window=nullptr;
+    if (this->windowsv.size() > 0){
+        if (this->focused_window->workspace_index >= (int)this->windowsv.size()-1)
+            window = this->windowsv[0];
+        else
+            window = this->windowsv[this->focused_window->workspace_index+1];
+
+        if (window != nullptr)
+            window->focus();
+        else
+            this->focused_window = nullptr;
+    }
+    else {
+        swc_window_focus(NULL);
+        this->focused_window = nullptr;
+    }
+    return window;
+}
+
 void Workspace::next_layout(){
 	this->currentlayout = this->currentlayout->next;
 	arrange();
 }
 
+void Workspace::showAll(){
+    // Initialize variables
+    if (this->windowsv.size() == 0) return;
+
+    for (int i=0; i<(int)this->windowsv.size(); i++)
+        swc_window_show(this->windowsv[i]->swc);    
+}
+
 void Workspace::hideAll(){
     // Initialize variables
-    Window * window = NULL;
-    struct swc_rectangle geometry;
+    if (this->windowsv.size() == 0) return;
 
-    if (this->num_windows == 0) return;
-
-    // Iterate over columns
-    geometry.x = 10000;
-    geometry.y = 10000;
-    geometry.width = 0;
-    geometry.height = 0;
-
-    window = wl_container_of(this->windows.next, window, link);
-    for (int window_index = 0; &window->link != &this->windows; window_index++)
-    {
-        // Apply window position and size
-        swc_window_set_geometry(window->swc, &geometry);
-        // Get next window
-        window = wl_container_of(window->link.next, window, link);
-    }
+    for (int i=0; i<(int)this->windowsv.size(); i++)
+        swc_window_hide(this->windowsv[i]->swc);
 }

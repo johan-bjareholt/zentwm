@@ -20,28 +20,7 @@ void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t s
 
 void window_destroy(void * data)
 {
-    Window * window = (Window *)data, * next_focus;
-    window->workspace->focused_window = NULL;
-
-    if (active_screen->current_workspace->focused_window == window)
-    {
-        /* Try to find a new focus nearby the old one. */
-        next_focus = wl_container_of(window->link.next, window, link);
-
-        if (&next_focus->link == &window->workspace->windows)
-        {
-            next_focus = wl_container_of(window->link.prev,
-                                         window, link);
-
-            if (&next_focus->link == &window->workspace->windows)
-                next_focus = NULL;
-        }
-        // Needs to be added when proper c++ equivalent is implemented
-        //focus(next_focus);
-        next_focus->focus();
-        //swc_window_focus(next_focus);
-    }
-
+    Window * window = (Window *)data;
     window->workspace->remove_window(window);
     free(window);
 }
@@ -66,6 +45,7 @@ Window::Window(swc_window* swc, Workspace* workspace, const swc_window_handler* 
 {
     this->swc = swc;
     this->workspace = workspace;
+    // This sets both Workspace* and workspace_index
     this->workspace->add_window(this);
     swc_window_set_handler(swc, window_handler, this);
     swc_window_set_tiled(swc);
@@ -73,17 +53,15 @@ Window::Window(swc_window* swc, Workspace* workspace, const swc_window_handler* 
 
 void Window::focus()
 {
-    if (active_screen->current_workspace->focused_window)
+    if (active_screen->current_workspace->focused_window != nullptr)
     {
         swc_window_set_border(active_screen->current_workspace->focused_window->swc,
                               border_color_normal, border_width);
     }
-
     swc_window_set_border(this->swc, border_color_active, border_width);
     swc_window_focus(this->swc);
-
-    this->workspace->focused_window = this;
     active_screen->current_workspace = this->workspace;
+    this->workspace->focused_window = this;
 }
 
 bool Window::operator==(Window& other){

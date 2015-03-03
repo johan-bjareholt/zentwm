@@ -20,10 +20,7 @@ void new_screen(struct swc_screen * swc)
 
 void new_window(struct swc_window * swc)
 {
-    Window * window;
-
-    window = new Window(swc, active_screen->current_workspace, &window_handler);
-    window->focus();
+    new Window(swc, active_screen->current_workspace, &window_handler);
 }
 
 

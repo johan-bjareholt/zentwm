@@ -74,25 +74,24 @@ Screen::~Screen(){
 	This function is very dirty, should be fixed!
 
 */
-void Screen::hideAll(Workspace* workspace){
-	this->current_workspace->hideAll();
-}
 
 void Screen::change_workspace(int workspace_index){
 	if (workspace_index < 1 || workspace_index > num_workspace)
 		return;
-	hideAll(current_workspace);
-	current_workspace = workspaces[workspace_index-1];
-	current_workspace->arrange();
-	if (current_workspace->focused_window)
-		current_workspace->focused_window->focus();
+	// Get new workspace
+	Workspace* workspace = workspaces[workspace_index-1];
+	change_workspace(workspace);
 }
 
 void Screen::change_workspace(Workspace* workspace){
 	if (workspace->screen != this)
 		return;
-	hideAll(current_workspace);
+	current_workspace->hideAll();
+	// Get new workspace
 	current_workspace = workspace;
+	current_workspace->showAll();
+	if (current_workspace->focused_window)
+		current_workspace->focused_window->focus();
 	current_workspace->arrange();
 }
 

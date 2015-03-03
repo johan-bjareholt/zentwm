@@ -33,7 +33,7 @@ class Window {
 public:
     struct swc_window * swc;
     Workspace* workspace;
-    struct wl_list link;    
+    int workspace_index;
 
     Window(swc_window* swc, Workspace*, const swc_window_handler* window_handler);
     void focus();

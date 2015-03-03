@@ -2,6 +2,7 @@
 #define WORKSPACE_H
 
 #include <string>
+#include <vector>
 
 class Workspace;
 
@@ -20,13 +21,14 @@ public:
 	std::string name;
 	Screen* screen;
 	Window* focused_window;
-    struct wl_list windows;
-    unsigned num_windows;
+    std::vector<Window*> windowsv;
 	Workspace(std::string, Screen* screen);
 	void add_window(Window* window);
 	void remove_window(Window* window);
 	void arrange();
+	Window* focus_next();
 	void next_layout();
+	void showAll();
 	void hideAll();
 };
 

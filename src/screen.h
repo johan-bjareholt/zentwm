@@ -44,7 +44,6 @@ public:
     Screen(swc_screen* swc, const swc_screen_handler* screen_handler);
     ~Screen();
     // Since this is a pointer to any workspace, does it fit into the screen class?
-    void hideAll(Workspace*);
     void change_workspace(int workspace_index);
     void change_workspace(Workspace*);
     bool operator==(Screen&);

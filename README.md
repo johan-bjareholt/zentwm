@@ -20,6 +20,8 @@ Simply run "swc-launch $PATH_TO_ZENTWM"
 #### General ToDo
 
 - Decide whether to use camelcase or _
-- Move code from Screen to Workspace
-- Fix dirty hideAll workspace function
-- Change window.link to a C++ alternative, and fix all layout&hideAll functions to use the new one
+- (Partly fixed)Move code from Screen to Workspace
+
+#### Wont Fix
+- Upstream swc (until swc bug #20 and #21 are fixed)
+- Multiscreen (until either nvidia starts supporting wayland or i buy an amd card)
