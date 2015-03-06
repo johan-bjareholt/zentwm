@@ -35,8 +35,8 @@ Workspace::Workspace(std::string name, Screen* screen){
 }
 
 void Workspace::add_window(Window* window){
-    window->workspace_index = windowsv.size();
-    windowsv.push_back(window);
+    window->workspace_index = windows.size();
+    windows.push_back(window);
     if (active_screen->current_workspace == this){
 	   swc_window_show(window->swc);
        window->focus();
@@ -46,9 +46,9 @@ void Workspace::add_window(Window* window){
 
 void Workspace::remove_window(Window* window){
     window->workspace = NULL;
-    windowsv.erase(windowsv.begin()+window->workspace_index);
-    for (int i=window->workspace_index; i<(int)windowsv.size(); i++)
-        windowsv[i]->workspace_index--;
+    windows.erase(windows.begin()+window->workspace_index);
+    for (int i=window->workspace_index; i<(int)windows.size(); i++)
+        windows[i]->workspace_index--;
     swc_window_hide(window->swc);
     this->focus_next();
     arrange();
@@ -60,11 +60,11 @@ void Workspace::arrange(){
 
 Window* Workspace::focus_next(){
     Window* window=nullptr;
-    if (this->windowsv.size() > 0){
-        if (this->focused_window->workspace_index >= (int)this->windowsv.size()-1)
-            window = this->windowsv[0];
+    if (this->windows.size() > 0){
+        if (this->focused_window->workspace_index >= (int)this->windows.size()-1)
+            window = this->windows[0];
         else
-            window = this->windowsv[this->focused_window->workspace_index+1];
+            window = this->windows[this->focused_window->workspace_index+1];
 
         if (window != nullptr)
             window->focus();
@@ -80,21 +80,22 @@ Window* Workspace::focus_next(){
 
 void Workspace::next_layout(){
 	this->currentlayout = this->currentlayout->next;
-	arrange();
+    this->showAll();
+	this->arrange();
 }
 
 void Workspace::showAll(){
     // Initialize variables
-    if (this->windowsv.size() == 0) return;
+    if (this->windows.size() == 0) return;
 
-    for (int i=0; i<(int)this->windowsv.size(); i++)
-        swc_window_show(this->windowsv[i]->swc);    
+    for (int i=0; i<(int)this->windows.size(); i++)
+        swc_window_show(this->windows[i]->swc);    
 }
 
 void Workspace::hideAll(){
     // Initialize variables
-    if (this->windowsv.size() == 0) return;
+    if (this->windows.size() == 0) return;
 
-    for (int i=0; i<(int)this->windowsv.size(); i++)
-        swc_window_hide(this->windowsv[i]->swc);
+    for (int i=0; i<(int)this->windows.size(); i++)
+        swc_window_hide(this->windows[i]->swc);
 }

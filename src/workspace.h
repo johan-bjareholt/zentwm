@@ -21,7 +21,7 @@ public:
 	std::string name;
 	Screen* screen;
 	Window* focused_window;
-    std::vector<Window*> windowsv;
+    std::vector<Window*> windows;
 	Workspace(std::string, Screen* screen);
 	void add_window(Window* window);
 	void remove_window(Window* window);

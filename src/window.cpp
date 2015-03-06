@@ -22,14 +22,16 @@ void window_destroy(void * data)
 {
     Window * window = (Window *)data;
     window->workspace->remove_window(window);
-    free(window);
+    delete window;
 }
 
 void window_entered(void * data)
 {
     Window * window = (Window *)data;
-    if (window)
+    if (window){
         window->focus();
+
+    }
     else
         swc_window_focus(NULL);
 }
@@ -53,15 +55,16 @@ Window::Window(swc_window* swc, Workspace* workspace, const swc_window_handler* 
 
 void Window::focus()
 {
-    if (active_screen->current_workspace->focused_window != nullptr)
+    if (this->workspace->focused_window != nullptr)
     {
-        swc_window_set_border(active_screen->current_workspace->focused_window->swc,
+        swc_window_set_border(this->workspace->focused_window->swc,
                               border_color_normal, border_width);
     }
     swc_window_set_border(this->swc, border_color_active, border_width);
     swc_window_focus(this->swc);
     active_screen->current_workspace = this->workspace;
     this->workspace->focused_window = this;
+    this->workspace->arrange();
 }
 
 bool Window::operator==(Window& other){

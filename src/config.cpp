@@ -60,5 +60,6 @@ void setup_layout() {
 
     // Add available layouts
 	add_layout(masterslavelayout);
+    add_layout(fulllayout);
 	add_layout(evenlayout);
 }

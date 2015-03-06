@@ -21,6 +21,7 @@ Simply run "swc-launch $PATH_TO_ZENTWM"
 
 - Decide whether to use camelcase or _
 - (Partly fixed)Move code from Screen to Workspace
+- Add support for hooks at specific events
 
 #### Wont Fix
 - Upstream swc (until swc bug #20 and #21 are fixed)

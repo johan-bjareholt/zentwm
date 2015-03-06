@@ -25,9 +25,12 @@ layout* get_layout();
 
 // Evenlayout
 extern struct layout evenlayout;
-void evenlayoutfunc(Workspace * screen);
+void evenlayoutfunc(Workspace * workspace);
 // Master-slave layout
 extern struct layout masterslavelayout;
-void masterslavelayoutfunc(Workspace * screen);
+void masterslavelayoutfunc(Workspace * workspace);
+// Full layout
+extern struct layout fulllayout;
+void fulllayoutfunc(Workspace* workspace);
 
 #endif

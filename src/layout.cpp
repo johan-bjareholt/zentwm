@@ -55,22 +55,22 @@ struct layout evenlayout {
 void evenlayoutfunc(Workspace * workspace)
 {
     // If there are no windows to arrange, stop
-    if (workspace->windowsv.size() == 0) return;
+    if (workspace->windows.size() == 0) return;
 
     // Initialize variables
     struct swc_rectangle geometry;
     struct swc_rectangle * workspace_geometry = &workspace->screen->swc->usable_geometry;
 
     // Number of rows and columns to use
-    int num_columns = ceil(sqrt(workspace->windowsv.size()));
-    int num_rows = workspace->windowsv.size() / num_columns + 1;
+    int num_columns = ceil(sqrt(workspace->windows.size()));
+    int num_rows = workspace->windows.size() / num_columns + 1;
 
     // Get ready to count windows
     int window_index = 0;
-    Window* window = workspace->windowsv[window_index];
+    Window* window = workspace->windows[window_index];
 
     // Iterate over columns
-    for (int column_index = 0; window_index < (int)workspace->windowsv.size(); ++column_index)
+    for (int column_index = 0; window_index < (int)workspace->windows.size(); ++column_index)
     {
         geometry.x = workspace_geometry->x + border_width + padding
             + workspace_geometry->width * column_index / num_columns;
@@ -78,7 +78,7 @@ void evenlayoutfunc(Workspace * workspace)
             - 2 * border_width - 2*padding;
 
         // If the last column has less windows than the others, fix that
-        if (column_index == (int)workspace->windowsv.size() % num_columns)
+        if (column_index == (int)workspace->windows.size() % num_columns)
             --num_rows;
 
         // Iterate over rows in column
@@ -90,7 +90,7 @@ void evenlayoutfunc(Workspace * workspace)
                 - 2 * border_width - 2*padding;
 
             // Get current window to apply position and size to
-            window = workspace->windowsv[window_index];
+            window = workspace->windows[window_index];
             // Apply window position and size
             swc_window_set_geometry(window->swc, &geometry);
             // Get ready for window
@@ -117,16 +117,16 @@ struct layout masterslavelayout {
 void masterslavelayoutfunc(Workspace * workspace)
 {
     // If there are no windows to arrange, stop
-    if (workspace->windowsv.size() == 0) return;
+    if (workspace->windows.size() == 0) return;
 
     // Initialize variables
     struct swc_rectangle geometry;
     struct swc_rectangle * workspace_geometry = &workspace->screen->swc->usable_geometry;
 
-    Window* window = workspace->windowsv[0];
+    Window* window = workspace->windows[0];
 
     // If there is only one window, make it reserve the full workspace
-    if (workspace->windowsv.size() == 1){
+    if (workspace->windows.size() == 1){
         geometry.x = workspace_geometry->x + border_width + padding;
         geometry.y = workspace_geometry->y + border_width + padding;
         geometry.width = workspace_geometry->width - 2*border_width - 2*padding;
@@ -141,13 +141,13 @@ void masterslavelayoutfunc(Workspace * workspace)
         geometry.height = workspace_geometry->height - 2*padding - 2*border_width;
 
         swc_window_set_geometry(window->swc, &geometry);
-        window = workspace->windowsv[window->workspace_index+1];
+        window = workspace->windows[window->workspace_index+1];
 
         // The other windows on rows on the right side
         geometry.x = workspace_geometry->x + workspace_geometry->width/2 + padding + border_width;
 
         // Calculate row count
-        int num_rows = workspace->windowsv.size() - 1;
+        int num_rows = workspace->windows.size() - 1;
         // Loop over each window in each row
         for (int row_index = 0; row_index < num_rows; ++row_index)
         {
@@ -157,7 +157,44 @@ void masterslavelayoutfunc(Workspace * workspace)
                 - 2 * border_width - 2*padding;
 
             swc_window_set_geometry(window->swc, &geometry);
-            window = workspace->windowsv[window->workspace_index+1];
+            window = workspace->windows[window->workspace_index+1];
         }
+    }
+}
+
+/*
+
+    Full Layout
+
+    Makes the focused window fullscreen, while the others are hidden
+
+*/
+
+struct layout fulllayout {
+    .name = "masterslave",
+    .layoutfunc = fulllayoutfunc,
+    .next = nullptr,
+};
+
+void fulllayoutfunc(Workspace* workspace)
+{
+    // If there are no windows to arrange, stop
+    if (workspace->windows.size() == 0) return;
+
+    // Initialize variables
+    struct swc_rectangle geometry;
+    struct swc_rectangle * workspace_geometry = &workspace->screen->swc->usable_geometry;
+
+    Window* window = workspace->focused_window;
+
+    if (window){
+        workspace->hideAll();
+        swc_window_show(window->swc);
+        geometry.x = workspace_geometry->x;
+        geometry.y = workspace_geometry->y;
+        geometry.width = workspace_geometry->width;
+        geometry.height = workspace_geometry->height;
+
+        swc_window_set_geometry(window->swc, &geometry);
     }
 }
