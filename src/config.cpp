@@ -22,7 +22,7 @@ void setup_hotkeys(){
                     &spawn, terminal_command);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_r,
                     &spawn, dmenu_command);
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Escape,
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_Escape,
                     &quit, NULL);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_space,
     				&next_layout, NULL);
@@ -50,6 +50,27 @@ void setup_hotkeys(){
                     &switch_workspace, &workspaces[8]);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_0,
                     &switch_workspace, &workspaces[9]);
+    // Workspace
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_1,
+                    &move_window_to_workspace, &workspaces[0]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_2,
+                    &move_window_to_workspace, &workspaces[1]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_3,
+                    &move_window_to_workspace, &workspaces[2]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_4,
+                    &move_window_to_workspace, &workspaces[3]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_5,
+                    &move_window_to_workspace, &workspaces[4]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_6,
+                    &move_window_to_workspace, &workspaces[5]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_7,
+                    &move_window_to_workspace, &workspaces[6]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_8,
+                    &move_window_to_workspace, &workspaces[7]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_9,
+                    &move_window_to_workspace, &workspaces[8]);
+    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_0,
+                    &move_window_to_workspace, &workspaces[9]);
 }
 
 void setup_layout() {

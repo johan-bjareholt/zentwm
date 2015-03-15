@@ -11,6 +11,16 @@ void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t s
         swc_window_close(active_screen->current_workspace->focused_window->swc);
 }
 
+void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32_t state){
+    if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+        active_screen->current_workspace->focused_window != NULL){
+    
+        Window* window_to_move = active_screen->current_workspace->focused_window;
+        active_screen->current_workspace->remove_window(window_to_move);
+        int* target_workspace = (int*) data;
+        active_screen->workspaces[*target_workspace-1]->add_window(window_to_move);
+    }
+}
 
 /*
 
@@ -61,8 +71,10 @@ void Window::focus()
                               border_color_normal, border_width);
     }
     swc_window_set_border(this->swc, border_color_active, border_width);
-    swc_window_focus(this->swc);
-    active_screen->current_workspace = this->workspace;
+
+    if (this->workspace == active_screen->current_workspace){
+        swc_window_focus(this->swc);
+    }
     this->workspace->focused_window = this;
     this->workspace->arrange();
 }

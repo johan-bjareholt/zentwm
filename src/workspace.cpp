@@ -12,12 +12,12 @@ void switch_workspace(void * data, uint32_t time, uint32_t value, uint32_t state
 
 
 void focus_next(void * data, uint32_t time, uint32_t value, uint32_t state){
-    if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
+    if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
         active_screen->current_workspace->focus_next();
 }
 
 void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state){
-	if (state != WL_KEYBOARD_KEY_STATE_PRESSED)
+	if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
 		active_screen->current_workspace->next_layout();
 }
 
@@ -36,11 +36,12 @@ Workspace::Workspace(std::string name, Screen* screen){
 
 void Workspace::add_window(Window* window){
     window->workspace_index = windows.size();
+    window->workspace = this;
     windows.push_back(window);
     if (active_screen->current_workspace == this){
-	   swc_window_show(window->swc);
-       window->focus();
+       swc_window_show(window->swc);
     }
+    window->focus();
 	arrange();
 }
 

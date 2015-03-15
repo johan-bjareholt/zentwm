@@ -12,6 +12,7 @@ class Window;
 
 // Commands
 void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state);
+void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32_t state);
 
 // Window handler hooks
 void window_destroy(void * data);
