@@ -11,7 +11,7 @@ uint32_t border_color_normal = 0xff888888;
 int panelreservation = 0;
 int padding=0;
 
-static const char * terminal_command[] = { "st-wl", NULL };
+static const char * terminal_command[] = { "urxvt", NULL };
 static const char * dmenu_command[] = { "dmenu_run-wl", NULL };
 static int workspaces[] = {1,2,3,4,5,6,7,8,9,10};
 
@@ -50,7 +50,8 @@ void setup_hotkeys(){
                     &switch_workspace, &workspaces[8]);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_0,
                     &switch_workspace, &workspaces[9]);
-    // Workspace
+
+    // Moving windows between workspaces
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_1,
                     &move_window_to_workspace, &workspaces[0]);
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_2,

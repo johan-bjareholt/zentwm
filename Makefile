@@ -3,7 +3,7 @@ NAME=zentwm
 CPPFLAGS	+=-Wall -Ilibswc --std=c++11
 LDFLAGS	+=-lm
 
-CFLAGS	+= $(shell pkg-config --cflags swc)
+CPPFLAGS	+= $(shell pkg-config --cflags swc)
 LDFLAGS	+= $(shell pkg-config --libs swc)
 
 SRCN=wm screen window layout config util workspace

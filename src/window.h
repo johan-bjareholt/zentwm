@@ -22,7 +22,7 @@ void window_entered(void * data);
 const struct swc_window_handler window_handler = {
     .destroy = &window_destroy,
     .title_changed = NULL,
-    .appid_changed = NULL,
+    .app_id_changed = NULL,
     .parent_changed = NULL,
     .entered = &window_entered,
     .move = NULL,
