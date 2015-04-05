@@ -22,6 +22,32 @@ void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32
     }
 }
 
+void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint32_t state){
+	Window* window = active_screen->current_workspace->focused_window;
+	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+		window != NULL){
+		window->type = WINDOW_TILING;
+	}
+}
+
+void make_focused_window_floating(void * data, uint32_t time, uint32_t value, uint32_t state){
+	Window* window = active_screen->current_workspace->focused_window;
+	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+		window != NULL){
+		window->type = WINDOW_FLOATING;
+	}
+}
+
+void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint32_t state){
+	Window* window = active_screen->current_workspace->focused_window;
+	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+		window != NULL){
+		window->type = WINDOW_STATIC;
+		active_screen->current_workspace->remove_window(window);
+		swc_window_show(window->swc);
+	}
+}
+
 /*
 
 	Window Handler hooks

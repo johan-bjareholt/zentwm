@@ -188,13 +188,14 @@ void fulllayoutfunc(Workspace* workspace)
     Window* window = workspace->focused_window;
 
     if (window){
-        workspace->hideAll();
-        swc_window_show(window->swc);
         geometry.x = workspace_geometry->x;
         geometry.y = workspace_geometry->y;
         geometry.width = workspace_geometry->width;
         geometry.height = workspace_geometry->height;
 
         swc_window_set_geometry(window->swc, &geometry);
+
+        workspace->hideAll();
+        swc_window_show(window->swc);
     }
 }

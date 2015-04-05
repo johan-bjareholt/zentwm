@@ -12,22 +12,36 @@ int panelreservation = 0;
 int padding=0;
 
 static const char * terminal_command[] = { "urxvt", NULL };
-static const char * dmenu_command[] = { "dmenu_run-wl", NULL };
+static const char * dmenu_command[] = { "dmenu_run", NULL };
 static int workspaces[] = {1,2,3,4,5,6,7,8,9,10};
 
 void setup_hotkeys(){
-    swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
+    // Close focused window, SUPER+Q
+	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
                     &close_focused_window, NULL);
+	// Open terminal, SUPER+Enter
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Return,
                     &spawn, terminal_command);
+	// Open dmenu, SUPER+r
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_r,
                     &spawn, dmenu_command);
+	// Kill zentwm, SUPER+SHIFT+Esc
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO|SWC_MOD_SHIFT, XKB_KEY_Escape,
                     &quit, NULL);
+	// Change layout, SUPER+Space
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_space,
     				&next_layout, NULL);
+	// Focus next window, SUPER+Tab
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_Tab,
                     &focus_next, NULL);
+
+	// Changing window types
+	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_z,
+					&make_focused_window_tiling, NULL);
+	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_x,
+					&make_focused_window_floating, NULL);
+	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_c,
+					&make_focused_window_static, NULL);
 
     // Workspace
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_1,
