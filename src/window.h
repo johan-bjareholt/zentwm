@@ -40,13 +40,15 @@ const int WINDOW_STATIC		= 2;
 // Window class
 class Window {
 public:
+	Workspace* workspace;
     struct swc_window * swc;
-    Workspace* workspace;
-    int workspace_index;
 	int type;
 
     Window(swc_window* swc, Workspace*, const swc_window_handler* window_handler);
-    void focus();
+    ~Window();
+	void focus();
+	void changeType(int);
+	int getWorkspaceIndex();
     bool operator==(Window&);
 };
 

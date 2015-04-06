@@ -1,6 +1,9 @@
 #include "workspace.h"
 #include "screen.h"
 
+#include <algorithm>
+#include <iostream>
+
 /*
 	Commands
 */
@@ -35,7 +38,6 @@ Workspace::Workspace(std::string name, Screen* screen){
 }
 
 void Workspace::add_window(Window* window){
-    window->workspace_index = windows.size();
     window->workspace = this;
     windows.push_back(window);
     if (active_screen->current_workspace == this){
@@ -46,12 +48,10 @@ void Workspace::add_window(Window* window){
 }
 
 void Workspace::remove_window(Window* window){
-    window->workspace = NULL;
-    windows.erase(windows.begin()+window->workspace_index);
-    for (int i=window->workspace_index; i<(int)windows.size(); i++)
-        windows[i]->workspace_index--;
+    windows.erase(windows.begin()+window->getWorkspaceIndex());
     swc_window_hide(window->swc);
-    this->focus_next();
+	this->focus_next();
+    window->workspace = NULL;
     arrange();
 }
 
@@ -62,10 +62,10 @@ void Workspace::arrange(){
 Window* Workspace::focus_next(){
     Window* window=nullptr;
     if (this->windows.size() > 0){
-        if (this->focused_window->workspace_index >= (int)this->windows.size()-1)
+        if (this->focused_window->getWorkspaceIndex() >= (int)this->windows.size()-1)
             window = this->windows[0];
         else
-            window = this->windows[this->focused_window->workspace_index+1];
+            window = this->windows[this->focused_window->getWorkspaceIndex()+1];
 
         if (window != nullptr)
             window->focus();
@@ -99,4 +99,17 @@ void Workspace::hideAll(){
 
     for (int i=0; i<(int)this->windows.size(); i++)
         swc_window_hide(this->windows[i]->swc);
+}
+
+int Workspace::count(){
+	return windows.size();
+}
+
+int Workspace::count_tiling(){
+	int count = 0;
+	for (int i=0; i<this->count(); i++){
+		if (windows[i]->type == WINDOW_TILING)
+			count++;
+	}
+	return count++;
 }

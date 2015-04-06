@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include <algorithm>
+
 /*
 
 	Commands
@@ -26,7 +28,7 @@ void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
 		window != NULL){
-		window->type = WINDOW_TILING;
+		window->changeType(WINDOW_TILING);
 	}
 }
 
@@ -34,7 +36,7 @@ void make_focused_window_floating(void * data, uint32_t time, uint32_t value, ui
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
 		window != NULL){
-		window->type = WINDOW_FLOATING;
+		window->changeType(WINDOW_FLOATING);
 	}
 }
 
@@ -42,9 +44,7 @@ void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
 		window != NULL){
-		window->type = WINDOW_STATIC;
-		active_screen->current_workspace->remove_window(window);
-		swc_window_show(window->swc);
+		window->changeType(WINDOW_STATIC);
 	}
 }
 
@@ -57,17 +57,14 @@ void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint
 void window_destroy(void * data)
 {
     Window * window = (Window *)data;
-    window->workspace->remove_window(window);
     delete window;
 }
 
 void window_entered(void * data)
 {
     Window * window = (Window *)data;
-    if (window){
+    if (window)
         window->focus();
-
-    }
     else
         swc_window_focus(NULL);
 }
@@ -84,25 +81,65 @@ Window::Window(swc_window* swc, Workspace* workspace, const swc_window_handler* 
     this->swc = swc;
     this->workspace = workspace;
     // This sets both Workspace* and workspace_index
-    this->workspace->add_window(this);
-    swc_window_set_handler(swc, window_handler, this);
-    swc_window_set_tiled(swc);
+    swc_window_set_handler(this->swc, window_handler, this);
+    swc_window_set_tiled(this->swc);
+	this->type = WINDOW_TILING;
+	this->workspace->add_window(this);
+}
+
+Window::~Window(){
+	swc_window_hide(this->swc);
+	if (this->workspace)
+		this->workspace->remove_window(this);
 }
 
 void Window::focus()
 {
-    if (this->workspace->focused_window != nullptr)
-    {
-        swc_window_set_border(this->workspace->focused_window->swc,
-                              border_color_normal, border_width);
-    }
-    swc_window_set_border(this->swc, border_color_active, border_width);
+	if (this->type != WINDOW_STATIC){
+	    if (this->workspace->focused_window != nullptr)
+	    {
+	        swc_window_set_border(this->workspace->focused_window->swc,
+	                              border_color_normal, border_width);
+	    }
+	    swc_window_set_border(this->swc, border_color_active, border_width);
+	
+    	if (this->workspace == active_screen->current_workspace){
+    	    swc_window_focus(this->swc);
+    	}
+    	this->workspace->focused_window = this;
+    	this->workspace->arrange();
+	}
+}
 
-    if (this->workspace == active_screen->current_workspace){
-        swc_window_focus(this->swc);
-    }
-    this->workspace->focused_window = this;
-    this->workspace->arrange();
+void Window::changeType(int type){
+	// Deinitialize old type
+	if (this->type == WINDOW_TILING){
+		active_screen->current_workspace->remove_window(this);
+	}
+	else if (this->type == WINDOW_FLOATING){
+		// Has yet to be implemented	
+	}
+	else if (this->type == WINDOW_STATIC){
+		swc_window_hide(this->swc);	
+	}
+
+	// Set new type
+	this->type = type;
+	
+	// Apply new type
+	if (this->type == WINDOW_TILING){
+		active_screen->current_workspace->add_window(this);
+	}
+	else if (this->type == WINDOW_FLOATING){
+		// Has yet to be implemented	
+	}
+	else if (this->type == WINDOW_STATIC){
+		swc_window_show(this->swc);
+	}
+}
+
+int Window::getWorkspaceIndex(){
+	return std::find(this->workspace->windows.begin(), this->workspace->windows.end(), this) - this->workspace->windows.begin();
 }
 
 bool Window::operator==(Window& other){

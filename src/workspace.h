@@ -21,7 +21,7 @@ public:
 	std::string name;
 	Screen* screen;
 	Window* focused_window;
-    std::vector<Window*> windows;
+	std::vector<Window*> windows;
 	Workspace(std::string, Screen* screen);
 	void add_window(Window* window);
 	void remove_window(Window* window);
@@ -30,6 +30,8 @@ public:
 	void next_layout();
 	void showAll();
 	void hideAll();
+	int count();
+	int count_tiling();
 };
 
 #endif

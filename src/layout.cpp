@@ -134,30 +134,31 @@ void masterslavelayoutfunc(Workspace * workspace)
         swc_window_set_geometry(window->swc, &geometry);
     }
     else {
-        // Master window on the left side
+		// Master window on the left side
         geometry.x = workspace_geometry->x + border_width + padding;
         geometry.width = workspace_geometry->width/2 - 2*padding - 2*border_width;
         geometry.y = workspace_geometry->y + border_width + padding;
         geometry.height = workspace_geometry->height - 2*padding - 2*border_width;
 
         swc_window_set_geometry(window->swc, &geometry);
-        window = workspace->windows[window->workspace_index+1];
 
         // The other windows on rows on the right side
         geometry.x = workspace_geometry->x + workspace_geometry->width/2 + padding + border_width;
 
         // Calculate row count
         int num_rows = workspace->windows.size() - 1;
+		int row_index;
         // Loop over each window in each row
-        for (int row_index = 0; row_index < num_rows; ++row_index)
+        for (int window_index = 1; window_index < workspace->windows.size(); window_index++)
         {
+			window = workspace->windows[window_index];
+			row_index = window_index - 1;
             geometry.y = workspace_geometry->y + border_width + padding
                 + workspace_geometry->height * row_index / num_rows;
             geometry.height = workspace_geometry->height / num_rows
                 - 2 * border_width - 2*padding;
 
             swc_window_set_geometry(window->swc, &geometry);
-            window = workspace->windows[window->workspace_index+1];
         }
     }
 }
