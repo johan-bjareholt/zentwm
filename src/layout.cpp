@@ -172,7 +172,7 @@ void masterslavelayoutfunc(Workspace * workspace)
 */
 
 struct layout fulllayout {
-    .name = "masterslave",
+    .name = "fulllayout",
     .layoutfunc = fulllayoutfunc,
     .next = nullptr,
 };
@@ -183,20 +183,15 @@ void fulllayoutfunc(Workspace* workspace)
     if (workspace->windows.size() == 0) return;
 
     // Initialize variables
-    struct swc_rectangle geometry;
-    struct swc_rectangle * workspace_geometry = &workspace->screen->swc->usable_geometry;
+    struct swc_rectangle * geometry = &workspace->screen->swc->usable_geometry;
 
     Window* window = workspace->focused_window;
 
     if (window){
-        geometry.x = workspace_geometry->x;
-        geometry.y = workspace_geometry->y;
-        geometry.width = workspace_geometry->width;
-        geometry.height = workspace_geometry->height;
-
-        swc_window_set_geometry(window->swc, &geometry);
+        swc_window_set_geometry(window->swc, geometry);
 
         workspace->hideAll();
         swc_window_show(window->swc);
     }
 }
+

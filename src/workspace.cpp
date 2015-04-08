@@ -15,12 +15,12 @@ void switch_workspace(void * data, uint32_t time, uint32_t value, uint32_t state
 
 
 void focus_next(void * data, uint32_t time, uint32_t value, uint32_t state){
-    if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
+    if (state == WL_KEYBOARD_KEY_STATE_RELEASED)
         active_screen->current_workspace->focus_next();
 }
 
 void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state){
-	if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
+	if (state == WL_KEYBOARD_KEY_STATE_RELEASED)
 		active_screen->current_workspace->next_layout();
 }
 

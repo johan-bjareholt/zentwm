@@ -23,7 +23,6 @@ Simply run "swc-launch $PATH_TO_ZENTWM"
 
 - Decide whether to use camelcase or _
 - Add support for hooks at specific events
-- Change !WL_KEYBOARD_KEY_STATE_PRESSED in functions to WL_KEYBOARD_KEY_STATE_RELEASED
 - Replacing some pointer arguments to references for stability
 - Fully implement WINDOW_FLOATING and WINDOW_STATIC, since STATIC doesn't work properly and FLOATING isn't implemented yet
 

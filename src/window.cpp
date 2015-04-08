@@ -8,13 +8,13 @@
 
 */
 void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t state){
-    if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+    if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
         active_screen->current_workspace->focused_window != NULL)
         swc_window_close(active_screen->current_workspace->focused_window->swc);
 }
 
 void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32_t state){
-    if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+    if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
         active_screen->current_workspace->focused_window != NULL){
     
         Window* window_to_move = active_screen->current_workspace->focused_window;
@@ -26,7 +26,7 @@ void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32
 
 void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint32_t state){
 	Window* window = active_screen->current_workspace->focused_window;
-	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
 		window->changeType(WINDOW_TILING);
 	}
@@ -34,7 +34,7 @@ void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint
 
 void make_focused_window_floating(void * data, uint32_t time, uint32_t value, uint32_t state){
 	Window* window = active_screen->current_workspace->focused_window;
-	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
 		window->changeType(WINDOW_FLOATING);
 	}
@@ -42,7 +42,7 @@ void make_focused_window_floating(void * data, uint32_t time, uint32_t value, ui
 
 void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint32_t state){
 	Window* window = active_screen->current_workspace->focused_window;
-	if (state != WL_KEYBOARD_KEY_STATE_PRESSED &&
+	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
 		window->changeType(WINDOW_STATIC);
 	}
