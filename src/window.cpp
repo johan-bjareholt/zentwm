@@ -16,7 +16,7 @@ void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t s
 void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32_t state){
     if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
         active_screen->current_workspace->focused_window != NULL){
-    
+
         Window* window_to_move = active_screen->current_workspace->focused_window;
         active_screen->current_workspace->remove_window(window_to_move);
         int* target_workspace = (int*) data;
@@ -28,7 +28,7 @@ void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
-		window->changeType(WINDOW_TILING);
+		window->change_type(WINDOW_TILING);
 	}
 }
 
@@ -36,7 +36,7 @@ void make_focused_window_floating(void * data, uint32_t time, uint32_t value, ui
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
-		window->changeType(WINDOW_FLOATING);
+		window->change_type(WINDOW_FLOATING);
 	}
 }
 
@@ -44,7 +44,7 @@ void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
-		window->changeType(WINDOW_STATIC);
+		window->change_type(WINDOW_STATIC);
 	}
 }
 
@@ -102,7 +102,7 @@ void Window::focus()
 	                              border_color_normal, border_width);
 	    }
 	    swc_window_set_border(this->swc, border_color_active, border_width);
-	
+
     	if (this->workspace == active_screen->current_workspace){
     	    swc_window_focus(this->swc);
     	}
@@ -111,34 +111,34 @@ void Window::focus()
 	}
 }
 
-void Window::changeType(int type){
+void Window::change_type(int type){
 	// Deinitialize old type
 	if (this->type == WINDOW_TILING){
 		active_screen->current_workspace->remove_window(this);
 	}
 	else if (this->type == WINDOW_FLOATING){
-		// Has yet to be implemented	
+		// Has yet to be implemented
 	}
 	else if (this->type == WINDOW_STATIC){
-		swc_window_hide(this->swc);	
+		swc_window_hide(this->swc);
 	}
 
 	// Set new type
 	this->type = type;
-	
+
 	// Apply new type
 	if (this->type == WINDOW_TILING){
 		active_screen->current_workspace->add_window(this);
 	}
 	else if (this->type == WINDOW_FLOATING){
-		// Has yet to be implemented	
+		// Has yet to be implemented
 	}
 	else if (this->type == WINDOW_STATIC){
 		swc_window_show(this->swc);
 	}
 }
 
-int Window::getWorkspaceIndex(){
+int Window::get_workspace_index(){
 	return std::find(this->workspace->windows.begin(), this->workspace->windows.end(), this) - this->workspace->windows.begin();
 }
 

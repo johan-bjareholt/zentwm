@@ -37,12 +37,12 @@ layout* get_layout(){
 
 
 
-/* 
-    
+/*
+
     Ëvenlayout
 
     This is a basic grid arrange function that tries to give each window an
-    equal space. 
+    equal space.
 
 */
 
@@ -103,7 +103,7 @@ void evenlayoutfunc(Workspace * workspace)
 
     Master-slave layout
 
-    An layout with one window being the master has one half of the left side of the workspace, 
+    An layout with one window being the master has one half of the left side of the workspace,
     while the others are rowed on the right side of the workspace
 
 */
@@ -149,7 +149,7 @@ void masterslavelayoutfunc(Workspace * workspace)
         int num_rows = workspace->windows.size() - 1;
 		int row_index;
         // Loop over each window in each row
-        for (int window_index = 1; window_index < workspace->windows.size(); window_index++)
+        for (int window_index = 1; window_index < (int)workspace->windows.size(); window_index++)
         {
 			window = workspace->windows[window_index];
 			row_index = window_index - 1;
@@ -190,8 +190,7 @@ void fulllayoutfunc(Workspace* workspace)
     if (window){
         swc_window_set_geometry(window->swc, geometry);
 
-        workspace->hideAll();
+        workspace->hide_all();
         swc_window_show(window->swc);
     }
 }
-

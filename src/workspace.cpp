@@ -48,7 +48,7 @@ void Workspace::add_window(Window* window){
 }
 
 void Workspace::remove_window(Window* window){
-    windows.erase(windows.begin()+window->getWorkspaceIndex());
+    windows.erase(windows.begin()+window->get_workspace_index());
     swc_window_hide(window->swc);
 	this->focus_next();
     window->workspace = NULL;
@@ -62,10 +62,10 @@ void Workspace::arrange(){
 Window* Workspace::focus_next(){
     Window* window=nullptr;
     if (this->windows.size() > 0){
-        if (this->focused_window->getWorkspaceIndex() >= (int)this->windows.size()-1)
+        if (this->focused_window->get_workspace_index() >= (int)this->windows.size()-1)
             window = this->windows[0];
         else
-            window = this->windows[this->focused_window->getWorkspaceIndex()+1];
+            window = this->windows[this->focused_window->get_workspace_index()+1];
 
         if (window != nullptr)
             window->focus();
@@ -81,19 +81,19 @@ Window* Workspace::focus_next(){
 
 void Workspace::next_layout(){
 	this->currentlayout = this->currentlayout->next;
-    this->showAll();
+    this->show_all();
 	this->arrange();
 }
 
-void Workspace::showAll(){
+void Workspace::show_all(){
     // Initialize variables
     if (this->windows.size() == 0) return;
 
     for (int i=0; i<(int)this->windows.size(); i++)
-        swc_window_show(this->windows[i]->swc);    
+        swc_window_show(this->windows[i]->swc);
 }
 
-void Workspace::hideAll(){
+void Workspace::hide_all(){
     // Initialize variables
     if (this->windows.size() == 0) return;
 

@@ -28,8 +28,8 @@ public:
 	void arrange();
 	Window* focus_next();
 	void next_layout();
-	void showAll();
-	void hideAll();
+	void show_all();
+	void hide_all();
 	int count();
 	int count_tiling();
 };

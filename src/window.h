@@ -47,8 +47,8 @@ public:
     Window(swc_window* swc, Workspace*, const swc_window_handler* window_handler);
     ~Window();
 	void focus();
-	void changeType(int);
-	int getWorkspaceIndex();
+	void change_type(int);
+	int get_workspace_index();
     bool operator==(Window&);
 };
 
