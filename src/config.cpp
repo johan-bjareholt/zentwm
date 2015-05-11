@@ -16,6 +16,10 @@ static const char * dmenu_command[] = { "dmenu_run", NULL };
 static int workspaces[] = {1,2,3,4,5,6,7,8,9,10};
 
 void setup_hotkeys(){
+	/*
+		Sets the default hotkeys
+	*/
+
     // Close focused window, SUPER+Q
 	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_q,
                     &close_focused_window, NULL);
@@ -89,8 +93,10 @@ void setup_hotkeys(){
 }
 
 void setup_layout() {
-    // Reserve space for panel
-    set_panelreserve(20);
+	/*
+		Initializes the linked layout list
+	*/
+
     // Adds padding to layout
     set_padding(5);
 

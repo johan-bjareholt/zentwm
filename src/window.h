@@ -48,7 +48,7 @@ public:
     ~Window();
 	void focus();
 	void change_type(int);
-	int get_workspace_index();
+	int get_index();
     bool operator==(Window&);
 };
 

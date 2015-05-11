@@ -138,7 +138,7 @@ void Window::change_type(int type){
 	}
 }
 
-int Window::get_workspace_index(){
+int Window::get_index(){
 	return std::find(this->workspace->windows.begin(), this->workspace->windows.end(), this) - this->workspace->windows.begin();
 }
 

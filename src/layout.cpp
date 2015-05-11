@@ -5,8 +5,6 @@
     Layout handling
 */
 
-typedef void(*layoutfunc)(Workspace*);
-
 
 layout* firstlayout = nullptr;
 
@@ -67,23 +65,25 @@ void evenlayoutfunc(Workspace * workspace)
 
     // Get ready to count windows
     int window_index = 0;
-    Window* window = workspace->windows[window_index];
+    Window* window = workspace->windows[0];
 
     // Iterate over columns
-    for (int column_index = 0; window_index < (int)workspace->windows.size(); ++column_index)
+    for (int column_index = 0; column_index < num_columns; ++column_index)
     {
+        // Get column geometry
         geometry.x = workspace_geometry->x + border_width + padding
             + workspace_geometry->width * column_index / num_columns;
         geometry.width = workspace_geometry->width / num_columns
             - 2 * border_width - 2*padding;
 
-        // If the last column has less windows than the others, fix that
+        // Even out the amount of rows if the window count doesnt have a even sqrt
         if (column_index == (int)workspace->windows.size() % num_columns)
             --num_rows;
 
         // Iterate over rows in column
         for (int row_index = 0; row_index < num_rows; ++row_index)
         {
+            // Get row geometry
             geometry.y = workspace_geometry->y + border_width + padding
                 + workspace_geometry->height * row_index / num_rows;
             geometry.height = workspace_geometry->height / num_rows
@@ -93,7 +93,6 @@ void evenlayoutfunc(Workspace * workspace)
             window = workspace->windows[window_index];
             // Apply window position and size
             swc_window_set_geometry(window->swc, &geometry);
-            // Get ready for window
             window_index++;
         }
     }
@@ -139,7 +138,7 @@ void masterslavelayoutfunc(Workspace * workspace)
         geometry.width = workspace_geometry->width/2 - 2*padding - 2*border_width;
         geometry.y = workspace_geometry->y + border_width + padding;
         geometry.height = workspace_geometry->height - 2*padding - 2*border_width;
-
+        // Apply size to master window
         swc_window_set_geometry(window->swc, &geometry);
 
         // The other windows on rows on the right side
@@ -151,13 +150,15 @@ void masterslavelayoutfunc(Workspace * workspace)
         // Loop over each window in each row
         for (int window_index = 1; window_index < (int)workspace->windows.size(); window_index++)
         {
+            // Get window and row
 			window = workspace->windows[window_index];
 			row_index = window_index - 1;
+            // Set dimensions
             geometry.y = workspace_geometry->y + border_width + padding
                 + workspace_geometry->height * row_index / num_rows;
             geometry.height = workspace_geometry->height / num_rows
                 - 2 * border_width - 2*padding;
-
+            // Apply size to window
             swc_window_set_geometry(window->swc, &geometry);
         }
     }
@@ -172,24 +173,25 @@ void masterslavelayoutfunc(Workspace * workspace)
 */
 
 struct layout fulllayout {
-    .name = "fulllayout",
+    .name = "full",
     .layoutfunc = fulllayoutfunc,
     .next = nullptr,
 };
 
 void fulllayoutfunc(Workspace* workspace)
 {
-    // If there are no windows to arrange, stop
+    // If there are no windows to arrange, abort
     if (workspace->windows.size() == 0) return;
 
-    // Initialize variables
+    // Get available screen realestate
     struct swc_rectangle * geometry = &workspace->screen->swc->usable_geometry;
-
+    // Get window
     Window* window = workspace->focused_window;
 
     if (window){
+        // Set focused windows geometry to the full screen realestate
         swc_window_set_geometry(window->swc, geometry);
-
+        // Hide all windows except for the focused one
         workspace->hide_all();
         swc_window_show(window->swc);
     }

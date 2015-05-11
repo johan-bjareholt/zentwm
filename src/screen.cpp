@@ -8,15 +8,6 @@
 
 */
 
-void set_panelreserve(int px){
-	struct swc_rectangle * screen_geometry = &active_screen->swc->usable_geometry;
-	screen_geometry->y -= panelreservation;
-	screen_geometry->height += panelreservation;
-	panelreservation = px;
-	screen_geometry->y += panelreservation;
-	screen_geometry->height -= panelreservation;
-}
-
 void set_padding(int px){
 	padding = px;
 	active_screen->current_workspace->arrange();
@@ -31,11 +22,10 @@ void set_padding(int px){
 
 void screen_usable_geometry_changed(void * data)
 {
-    Screen * screen = (Screen*)data;
-
-    /* If the usable geometry of the screen changes, for example when a panel is
+	/* If the usable geometry of the screen changes, for example when a panel is
      * docked to the edge of the screen, we need to rearrange the windows to
      * ensure they are all within the new usable geometry. */
+    Screen* screen = (Screen*) data;
     screen->current_workspace->arrange();
 }
 

@@ -8,6 +8,7 @@
 
 typedef void(*layoutfunc)(Workspace*);
 
+// Base layout struct
 struct layout {
     std::string name;
     void (*layoutfunc)(Workspace*);

@@ -1,15 +1,6 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-/*
-
-	ToDo
-
-	- screen_usable_geometry_changed isn't applied and tested with screen_handler
-    - hiding windows from other workspaces is very dirty
-
-*/
-
 extern "C" {
 	#include <swc.h>
 }
@@ -18,8 +9,8 @@ class Screen;
 
 #include "window.h"
 #include "layout.h"
+
 // Setup functions
-void set_panelreserve(int);
 void set_padding(int);
 
 // Screen handler hooks

@@ -22,16 +22,20 @@ public:
 	Screen* screen;
 	Window* focused_window;
 	std::vector<Window*> windows;
+
 	Workspace(std::string, Screen* screen);
+	// Window handling
 	void add_window(Window* window);
 	void remove_window(Window* window);
-	void arrange();
-	Window* focus_next();
-	void next_layout();
 	void show_all();
 	void hide_all();
+	Window* focus_next();
 	int count();
 	int count_tiling();
+
+	// Layout handling
+	void arrange();
+	void next_layout();
 };
 
 #endif

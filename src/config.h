@@ -14,11 +14,12 @@ extern "C" {
 extern uint32_t border_width;
 extern uint32_t border_color_active;
 extern uint32_t border_color_normal;
-extern int panelreservation;
 extern int padding;
 
+// Sets the default hotkeys
 void setup_hotkeys();
 
+// Initializes the linked layout list
 void setup_layout();
 
 #endif

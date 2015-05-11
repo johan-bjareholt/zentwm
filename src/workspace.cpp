@@ -37,6 +37,13 @@ Workspace::Workspace(std::string name, Screen* screen){
     this->focused_window = nullptr;
 }
 
+
+/*
+
+    Window Handling
+
+*/
+
 void Workspace::add_window(Window* window){
     window->workspace = this;
     windows.push_back(window);
@@ -48,41 +55,11 @@ void Workspace::add_window(Window* window){
 }
 
 void Workspace::remove_window(Window* window){
-    windows.erase(windows.begin()+window->get_workspace_index());
+    windows.erase(windows.begin()+window->get_index());
     swc_window_hide(window->swc);
 	this->focus_next();
     window->workspace = NULL;
     arrange();
-}
-
-void Workspace::arrange(){
-	this->currentlayout->layoutfunc(this);
-}
-
-Window* Workspace::focus_next(){
-    Window* window=nullptr;
-    if (this->windows.size() > 0){
-        if (this->focused_window->get_workspace_index() >= (int)this->windows.size()-1)
-            window = this->windows[0];
-        else
-            window = this->windows[this->focused_window->get_workspace_index()+1];
-
-        if (window != nullptr)
-            window->focus();
-        else
-            this->focused_window = nullptr;
-    }
-    else {
-        swc_window_focus(NULL);
-        this->focused_window = nullptr;
-    }
-    return window;
-}
-
-void Workspace::next_layout(){
-	this->currentlayout = this->currentlayout->next;
-    this->show_all();
-	this->arrange();
 }
 
 void Workspace::show_all(){
@@ -101,6 +78,26 @@ void Workspace::hide_all(){
         swc_window_hide(this->windows[i]->swc);
 }
 
+Window* Workspace::focus_next(){
+    Window* window=nullptr;
+    if (this->windows.size() > 0){
+        if (this->focused_window->get_index() >= (int)this->windows.size()-1)
+            window = this->windows[0];
+        else
+            window = this->windows[this->focused_window->get_index()+1];
+
+        if (window != nullptr)
+            window->focus();
+        else
+            this->focused_window = nullptr;
+    }
+    else {
+        swc_window_focus(NULL);
+        this->focused_window = nullptr;
+    }
+    return window;
+}
+
 int Workspace::count(){
 	return windows.size();
 }
@@ -112,4 +109,22 @@ int Workspace::count_tiling(){
 			count++;
 	}
 	return count++;
+}
+
+
+
+/*
+
+    Layout handling
+
+*/
+
+void Workspace::arrange(){
+	this->currentlayout->layoutfunc(this);
+}
+
+void Workspace::next_layout(){
+	this->currentlayout = this->currentlayout->next;
+    this->show_all();
+	this->arrange();
 }
