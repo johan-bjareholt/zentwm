@@ -23,11 +23,12 @@ Simply run "swc-launch $PATH_TO_ZENTWM"
 
 - Add support for hooks at specific events
 - Replacing some pointer arguments to references for stability
-- Fully implement WINDOW_FLOATING and WINDOW_STATIC, since STATIC doesn't work properly and FLOATING isn't implemented yet
-- Wallpaper support
+- Implement WINDOW_FLOATING
+- Properly implement WINDOW_BACKGROUND
 
-#### Wont Fix
-- Multiscreen (until either nvidia starts supporting wayland or i buy an amd card)
+#### Low priority ToDo
+- Configuration
+- Multimonitor
 
 ### FAQ
 

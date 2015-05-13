@@ -40,11 +40,11 @@ void make_focused_window_floating(void * data, uint32_t time, uint32_t value, ui
 	}
 }
 
-void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint32_t state){
+void make_focused_window_background(void * data, uint32_t time, uint32_t value, uint32_t state){
 	Window* window = active_screen->current_workspace->focused_window;
 	if (state == WL_KEYBOARD_KEY_STATE_RELEASED &&
 		window != NULL){
-		window->change_type(WINDOW_STATIC);
+        window->change_type(WINDOW_BACKGROUND);
 	}
 }
 
@@ -95,7 +95,7 @@ Window::~Window(){
 
 void Window::focus()
 {
-	if (this->type != WINDOW_STATIC){
+	if (this->type != WINDOW_BACKGROUND){
 	    if (this->workspace->focused_window != nullptr)
 	    {
 	        swc_window_set_border(this->workspace->focused_window->swc,
@@ -112,29 +112,25 @@ void Window::focus()
 }
 
 void Window::change_type(int type){
-	// Deinitialize old type
-	if (this->type == WINDOW_TILING){
-		active_screen->current_workspace->remove_window(this);
-	}
-	else if (this->type == WINDOW_FLOATING){
-		// Has yet to be implemented
-	}
-	else if (this->type == WINDOW_STATIC){
-		swc_window_hide(this->swc);
-	}
-
 	// Set new type
+    int oldtype = type;
 	this->type = type;
 
 	// Apply new type
 	if (this->type == WINDOW_TILING){
-		active_screen->current_workspace->add_window(this);
+        swc_window_set_tiled(this->swc);
 	}
 	else if (this->type == WINDOW_FLOATING){
-		// Has yet to be implemented
+        // Has yet to be properly implemented
+        swc_window_set_stacked(this->swc);
 	}
-	else if (this->type == WINDOW_STATIC){
-		swc_window_show(this->swc);
+	else if (this->type == WINDOW_BACKGROUND){
+        swc_window_set_geometry(this->swc, &this->workspace->screen->swc->usable_geometry);
+        swc_window_set_border(this->swc, 0x00000000, 0);
+        if (this == active_screen->current_workspace->focused_window)
+            this->workspace->focus_next();
+        this->workspace->remove_window(this);
+        swc_window_show(this->swc);
 	}
 }
 

@@ -15,7 +15,7 @@ void close_focused_window(void * data, uint32_t time, uint32_t value, uint32_t s
 void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32_t state);
 void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint32_t state);
 void make_focused_window_floating(void * data, uint32_t time, uint32_t value, uint32_t state);
-void make_focused_window_static(void * data, uint32_t time, uint32_t value, uint32_t state);
+void make_focused_window_background(void * data, uint32_t time, uint32_t value, uint32_t state);
 
 // Window handler hooks
 void window_destroy(void * data);
@@ -35,7 +35,7 @@ const struct swc_window_handler window_handler = {
 // Window types
 const int WINDOW_TILING		= 0;
 const int WINDOW_FLOATING	= 1;
-const int WINDOW_STATIC		= 2;
+const int WINDOW_BACKGROUND	= 2;
 
 // Window class
 class Window {

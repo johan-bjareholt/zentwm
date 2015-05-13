@@ -81,7 +81,7 @@ void Workspace::hide_all(){
 Window* Workspace::focus_next(){
     Window* window=nullptr;
     if (this->windows.size() > 0){
-        if (this->focused_window->get_index() >= (int)this->windows.size()-1)
+        if (this->focused_window != nullptr && this->focused_window->get_index() >= (int)this->windows.size()-1)
             window = this->windows[0];
         else
             window = this->windows[this->focused_window->get_index()+1];

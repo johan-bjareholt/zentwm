@@ -22,6 +22,7 @@ public:
 	Screen* screen;
 	Window* focused_window;
 	std::vector<Window*> windows;
+	std::vector<Window*> windows_floating;
 
 	Workspace(std::string, Screen* screen);
 	// Window handling

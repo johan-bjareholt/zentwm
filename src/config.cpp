@@ -45,7 +45,7 @@ void setup_hotkeys(){
 	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_x,
 					&make_focused_window_floating, NULL);
 	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_c,
-					&make_focused_window_static, NULL);
+					&make_focused_window_background, NULL);
 
     // Workspace
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_1,
