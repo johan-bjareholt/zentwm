@@ -19,6 +19,12 @@ There's currently no make install in the Makefile however.
 Simply run "swc-launch $PATH_TO_ZENTWM"
 
 
+#### Debugging
+
+swc-launch -- valgrind ./zentwm
+
+swc-launch -- gdb -batch -ex run ./zentwm
+
 #### General ToDo
 
 - Add support for hooks at specific events

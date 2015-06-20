@@ -11,7 +11,7 @@ uint32_t border_color_normal = 0xff888888;
 int panelreservation = 0;
 int padding=0;
 
-static const char * terminal_command[] = { "urxvt", NULL };
+static const char * terminal_command[] = { "st-wl", NULL };
 static const char * dmenu_command[] = { "dmenu_run", NULL };
 static int workspaces[] = {1,2,3,4,5,6,7,8,9,10};
 

@@ -44,6 +44,11 @@ public:
     struct swc_window * swc;
 	int type;
 
+	// Border colors
+	uint32_t default_border_color;
+	uint32_t current_border_color;
+
+
     Window(swc_window* swc, Workspace*, const swc_window_handler* window_handler);
     ~Window();
 	void focus();

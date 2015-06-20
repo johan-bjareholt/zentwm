@@ -80,6 +80,8 @@ Window::Window(swc_window* swc, Workspace* workspace, const swc_window_handler* 
 {
     this->swc = swc;
     this->workspace = workspace;
+    this->default_border_color = border_color_normal;
+    this->current_border_color = this->default_border_color;
     // This sets both Workspace* and workspace_index
     swc_window_set_handler(this->swc, window_handler, this);
     swc_window_set_tiled(this->swc);
@@ -99,7 +101,7 @@ void Window::focus()
 	    if (this->workspace->focused_window != nullptr)
 	    {
 	        swc_window_set_border(this->workspace->focused_window->swc,
-	                              border_color_normal, border_width);
+	                              this->workspace->focused_window->default_border_color, border_width);
 	    }
 	    swc_window_set_border(this->swc, border_color_active, border_width);
 
@@ -113,7 +115,6 @@ void Window::focus()
 
 void Window::change_type(int type){
 	// Set new type
-    int oldtype = type;
 	this->type = type;
 
 	// Apply new type
