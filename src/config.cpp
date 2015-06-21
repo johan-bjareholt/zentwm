@@ -1,3 +1,4 @@
+#include <linux/input.h>
 #include <xkbcommon/xkbcommon.h>
 
 #include "config.h"
@@ -46,6 +47,12 @@ void setup_hotkeys(){
 					&make_focused_window_floating, NULL);
 	swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_c,
 					&make_focused_window_background, NULL);
+
+	// Move window
+	swc_add_binding(SWC_BINDING_BUTTON, SWC_MOD_LOGO, BTN_LEFT,
+					&move_window_begin, NULL);
+	swc_add_binding(SWC_BINDING_BUTTON, SWC_MOD_ANY, BTN_LEFT,
+					&move_window_end, NULL);
 
     // Workspace
     swc_add_binding(SWC_BINDING_KEY, SWC_MOD_LOGO, XKB_KEY_1,

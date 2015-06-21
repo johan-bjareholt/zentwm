@@ -48,6 +48,20 @@ void make_focused_window_background(void * data, uint32_t time, uint32_t value, 
 	}
 }
 
+void move_window_begin(void * data, uint32_t time, uint32_t value, uint32_t state){
+    Window* window = active_screen->current_workspace->focused_window;
+    if (state == WL_POINTER_BUTTON_STATE_PRESSED &&
+        window != nullptr)
+        window->begin_move();
+}
+
+void move_window_end(void * data, uint32_t time, uint32_t value, uint32_t state){
+    Window* window = active_screen->current_workspace->focused_window;
+    if (state == WL_POINTER_BUTTON_STATE_RELEASED &&
+        window != nullptr)
+        window->end_move();
+}
+
 /*
 
 	Window Handler hooks
@@ -133,6 +147,19 @@ void Window::change_type(int type){
         this->workspace->remove_window(this);
         swc_window_show(this->swc);
 	}
+}
+
+void Window::begin_move(){
+    if (this == active_screen->current_workspace->focused_window){
+        this->change_type(WINDOW_FLOATING);
+        swc_window_begin_move(this->swc);
+    }
+}
+
+void Window::end_move(){
+    if (this == active_screen->current_workspace->focused_window){
+        swc_window_end_move(this->swc);
+    }
 }
 
 int Window::get_index(){

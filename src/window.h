@@ -16,6 +16,8 @@ void move_window_to_workspace(void * data, uint32_t time, uint32_t value, uint32
 void make_focused_window_tiling(void * data, uint32_t time, uint32_t value, uint32_t state);
 void make_focused_window_floating(void * data, uint32_t time, uint32_t value, uint32_t state);
 void make_focused_window_background(void * data, uint32_t time, uint32_t value, uint32_t state);
+void move_window_begin(void * data, uint32_t time, uint32_t value, uint32_t state);
+void move_window_end(void * data, uint32_t time, uint32_t value, uint32_t state);
 
 // Window handler hooks
 void window_destroy(void * data);
@@ -48,11 +50,15 @@ public:
 	uint32_t default_border_color;
 	uint32_t current_border_color;
 
-
+	/*
+		Functions
+	*/
     Window(swc_window* swc, Workspace*, const swc_window_handler* window_handler);
     ~Window();
 	void focus();
 	void change_type(int);
+	void begin_move();
+	void end_move();
 	int get_index();
     bool operator==(Window&);
 };
