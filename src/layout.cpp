@@ -53,19 +53,19 @@ struct layout evenlayout {
 void evenlayoutfunc(Workspace * workspace)
 {
     // If there are no windows to arrange, stop
-    if (workspace->windows.size() == 0) return;
+    if (workspace->count_tiling() == 0) return;
 
     // Initialize variables
     struct swc_rectangle geometry;
     struct swc_rectangle * workspace_geometry = &workspace->screen->swc->usable_geometry;
 
     // Number of rows and columns to use
-    int num_columns = ceil(sqrt(workspace->windows.size()));
-    int num_rows = workspace->windows.size() / num_columns + 1;
+    int num_columns = ceil(sqrt(workspace->count_tiling()));
+    int num_rows = workspace->count_tiling() / num_columns + 1;
 
     // Get ready to count windows
     int window_index = 0;
-    Window* window = workspace->windows[0];
+    Window* window = workspace->get_window(0);
 
     // Iterate over columns
     for (int column_index = 0; column_index < num_columns; ++column_index)
@@ -77,7 +77,7 @@ void evenlayoutfunc(Workspace * workspace)
             - 2 * border_width - 2*padding;
 
         // Even out the amount of rows if the window count doesnt have a even sqrt
-        if (column_index == (int)workspace->windows.size() % num_columns)
+        if (column_index == workspace->count_tiling() % num_columns)
             --num_rows;
 
         // Iterate over rows in column
@@ -90,7 +90,7 @@ void evenlayoutfunc(Workspace * workspace)
                 - 2 * border_width - 2*padding;
 
             // Get current window to apply position and size to
-            window = workspace->windows[window_index];
+            window = workspace->get_window(window_index);
             // Apply window position and size
             swc_window_set_geometry(window->swc, &geometry);
             window_index++;
@@ -116,16 +116,16 @@ struct layout masterslavelayout {
 void masterslavelayoutfunc(Workspace * workspace)
 {
     // If there are no windows to arrange, stop
-    if (workspace->windows.size() == 0) return;
+    if (workspace->count_tiling() == 0) return;
 
     // Initialize variables
     struct swc_rectangle geometry;
     struct swc_rectangle * workspace_geometry = &workspace->screen->swc->usable_geometry;
 
-    Window* window = workspace->windows[0];
+    Window* window = workspace->get_window(0);
 
     // If there is only one window, make it reserve the full workspace
-    if (workspace->windows.size() == 1){
+    if (workspace->count_tiling() == 1){
         geometry.x = workspace_geometry->x + border_width + padding;
         geometry.y = workspace_geometry->y + border_width + padding;
         geometry.width = workspace_geometry->width - 2*border_width - 2*padding;
@@ -145,13 +145,13 @@ void masterslavelayoutfunc(Workspace * workspace)
         geometry.x = workspace_geometry->x + workspace_geometry->width/2 + padding + border_width;
 
         // Calculate row count
-        int num_rows = workspace->windows.size() - 1;
+        int num_rows = workspace->count_tiling() - 1;
 		int row_index;
         // Loop over each window in each row
-        for (int window_index = 1; window_index < (int)workspace->windows.size(); window_index++)
+        for (int window_index = 1; window_index < workspace->count_tiling(); window_index++)
         {
             // Get window and row
-			window = workspace->windows[window_index];
+			window = workspace->get_window(window_index);
 			row_index = window_index - 1;
             // Set dimensions
             geometry.y = workspace_geometry->y + border_width + padding
@@ -181,7 +181,7 @@ struct layout fulllayout {
 void fulllayoutfunc(Workspace* workspace)
 {
     // If there are no windows to arrange, abort
-    if (workspace->windows.size() == 0) return;
+    if (workspace->count_tiling() == 0) return;
 
     // Get available screen realestate
     struct swc_rectangle * geometry = &workspace->screen->swc->usable_geometry;

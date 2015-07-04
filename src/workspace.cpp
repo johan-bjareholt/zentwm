@@ -138,16 +138,11 @@ int Workspace::get_index(Window* window){
 }
 
 int Workspace::count(){
-	return windows.size()+windows_floating.size();
+	return windows.size() + windows_floating.size();
 }
 
 int Workspace::count_tiling(){
-	int count = 0;
-	for (int i=0; i<this->count(); i++){
-		if (windows[i]->type == WINDOW_TILING)
-			count++;
-	}
-	return count++;
+	return windows.size();
 }
 
 

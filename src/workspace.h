@@ -17,12 +17,12 @@ void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state);
 class Workspace {
 private:
 	struct layout* currentlayout;
+	std::vector<Window*> windows;
+	std::vector<Window*> windows_floating;
 public:
 	std::string name;
 	Screen* screen;
 	Window* focused_window;
-	std::vector<Window*> windows;
-	std::vector<Window*> windows_floating;
 
 	Workspace(std::string, Screen* screen);
 	// Window handling
