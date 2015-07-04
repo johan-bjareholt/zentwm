@@ -1,6 +1,7 @@
 #include "window.h"
 
 #include <algorithm>
+#include <vector>
 
 /*
 
@@ -98,8 +99,8 @@ Window::Window(swc_window* swc, Workspace* workspace, const swc_window_handler* 
     this->current_border_color = this->default_border_color;
     // This sets both Workspace* and workspace_index
     swc_window_set_handler(this->swc, window_handler, this);
-    swc_window_set_tiled(this->swc);
 	this->type = WINDOW_TILING;
+    swc_window_set_tiled(this->swc);
 	this->workspace->add_window(this);
 }
 
@@ -128,6 +129,10 @@ void Window::focus()
 }
 
 void Window::change_type(int type){
+    // Remember workspace
+    Workspace* workspace = this->workspace;
+    // Remove from old workspace
+    this->workspace->remove_window(this);
 	// Set new type
 	this->type = type;
 
@@ -136,7 +141,6 @@ void Window::change_type(int type){
         swc_window_set_tiled(this->swc);
 	}
 	else if (this->type == WINDOW_FLOATING){
-        // Has yet to be properly implemented
         swc_window_set_stacked(this->swc);
 	}
 	else if (this->type == WINDOW_BACKGROUND){
@@ -147,11 +151,13 @@ void Window::change_type(int type){
         this->workspace->remove_window(this);
         swc_window_show(this->swc);
 	}
+    workspace->add_window(this);
 }
 
 void Window::begin_move(){
     if (this == active_screen->current_workspace->focused_window){
-        this->change_type(WINDOW_FLOATING);
+        if (this->type != WINDOW_FLOATING)
+            this->change_type(WINDOW_FLOATING);
         swc_window_begin_move(this->swc);
     }
 }
@@ -163,7 +169,7 @@ void Window::end_move(){
 }
 
 int Window::get_index(){
-	return std::find(this->workspace->windows.begin(), this->workspace->windows.end(), this) - this->workspace->windows.begin();
+    return this->workspace->get_index(this);
 }
 
 bool Window::operator==(Window& other){

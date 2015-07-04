@@ -29,7 +29,7 @@ swc-launch -- gdb -batch -ex run ./zentwm
 
 - Add support for hooks at specific events
 - Replacing some pointer arguments to references for stability
-- Implement WINDOW_FLOATING
+- Make floating windows float above all tiling windows
 - Properly implement WINDOW_BACKGROUND
 
 #### Low priority ToDo

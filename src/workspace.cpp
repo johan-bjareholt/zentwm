@@ -46,7 +46,10 @@ Workspace::Workspace(std::string name, Screen* screen){
 
 void Workspace::add_window(Window* window){
     window->workspace = this;
-    windows.push_back(window);
+    if (window->type == WINDOW_TILING)
+        windows.push_back(window);
+    else if (window->type == WINDOW_FLOATING)
+        windows_floating.push_back(window);
     if (active_screen->current_workspace == this){
        swc_window_show(window->swc);
     }
@@ -55,7 +58,16 @@ void Workspace::add_window(Window* window){
 }
 
 void Workspace::remove_window(Window* window){
-    windows.erase(windows.begin()+window->get_index());
+    int window_index = this->get_index(window);
+    std::vector<Window*>* container = nullptr;
+    if (window->type == WINDOW_TILING){
+        container = &windows;
+    }
+    else if (window->type == WINDOW_FLOATING){
+        container = &windows_floating;
+        window_index -= windows.size();
+    }
+    container->erase(window_index+container->begin());
     swc_window_hide(window->swc);
 	this->focus_next();
     window->workspace = NULL;
@@ -68,6 +80,8 @@ void Workspace::show_all(){
 
     for (int i=0; i<(int)this->windows.size(); i++)
         swc_window_show(this->windows[i]->swc);
+    for (int i=0; i<(int)this->windows_floating.size(); i++)
+        swc_window_show(this->windows_floating[i]->swc);
 }
 
 void Workspace::hide_all(){
@@ -76,6 +90,8 @@ void Workspace::hide_all(){
 
     for (int i=0; i<(int)this->windows.size(); i++)
         swc_window_hide(this->windows[i]->swc);
+    for (int i=0; i<(int)this->windows_floating.size(); i++)
+        swc_window_hide(this->windows_floating[i]->swc);
 }
 
 Window* Workspace::focus_next(){
@@ -98,8 +114,31 @@ Window* Workspace::focus_next(){
     return window;
 }
 
+Window* Workspace::get_window(int index){
+    Window* window;
+    if (index < (int)windows.size())
+        window = windows[index];
+    else
+        window = windows_floating[index - windows.size()];
+    return window;
+}
+
+int Workspace::get_index(Window* window){
+    std::vector<Window*>* container = nullptr;
+    int index = 0;
+    if (window->type == WINDOW_TILING){
+        container = &this->windows;
+    }
+    if (window->type == WINDOW_FLOATING){
+        container = &this->windows_floating;
+        index += windows.size();
+    }
+    index += std::find(container->begin(), container->end(), window) - container->begin();
+    return index;
+}
+
 int Workspace::count(){
-	return windows.size();
+	return windows.size()+windows_floating.size();
 }
 
 int Workspace::count_tiling(){

@@ -31,6 +31,9 @@ public:
 	void show_all();
 	void hide_all();
 	Window* focus_next();
+
+	int get_index(Window* window);
+	Window* get_window(int index);
 	int count();
 	int count_tiling();
 
