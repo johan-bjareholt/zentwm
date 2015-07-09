@@ -17,7 +17,7 @@ void next_layout(void * data, uint32_t time, uint32_t value, uint32_t state);
 class Workspace {
 private:
 	struct layout* currentlayout;
-	std::vector<Window*> windows;
+	std::vector<Window*> windows_tiling;
 	std::vector<Window*> windows_floating;
 public:
 	std::string name;
@@ -32,6 +32,7 @@ public:
 	void hide_all();
 	Window* focus_next();
 
+	// Window access
 	int get_index(Window* window);
 	Window* get_window(int index);
 	int count();
